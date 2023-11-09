@@ -1,0 +1,19 @@
+{{ .ModeName "launcher" }}
+
+bindsym f exec firefox; mode "default";
+bindsym c \
+    exec mattermost-desktop; \
+    exec slack; \
+    exec signal-desktop; \
+    mode "default"
+bindsym r \
+    exec sleep 10 && google-chrome http://localhost:3000; \
+    exec gnome-terminal --disable-factory --class 'radiopaedia-server' --working-directory ~/projects/Radiopaedia -- chruby-exec  ruby-2.6.3 -- bundle exec rails s ; \
+    exec gnome-terminal --disable-factory --class 'radiopaedia-console' --working-directory ~/projects/Radiopaedia ; \
+    exec subl --background ~/projects/Radiopaedia ; \
+    mode "default"
+
+bindsym s exec steam ; mode "default"
+bindsym comma exec code ~/.config/i3/config ; mode "default"
+
+bindsym q exec /home/daniel/.bin/killActiveWindow; mode "default"

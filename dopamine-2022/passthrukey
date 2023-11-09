@@ -1,0 +1,14 @@
+#!/bin/bash
+
+(
+  i3-msg -t subscribe '[ "mode" ]' &
+  i3-msg -t subscribe '[ "tick" ]'
+  i3-msg "mode passthrough, exec xdotool key $1"
+  wait
+  sleep 0.05
+  xdotool key $1
+  echo xdotool key $1
+
+  i3-msg mode default
+) 2>&1
+

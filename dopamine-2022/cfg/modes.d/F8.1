@@ -1,0 +1,9 @@
+{{ .ModeName "maintenance" }}
+
+# Reload the [C]onfiguration file
+bindsym c reload; mode default
+# restart the [W]indow manager in place (preserves your layout/session, can be used to upgrade i3)
+bindsym w restart; mode default
+bindsym a exec notify-send "Hi" "notify-send works"; mode default
+bindsym q kill; mode default
+bindsym p exec scrot '%Y-%m-%d-%s_screenshot_$wx$h.jpg' -e 'mv $f ~/Pictures/ && notify-send "Saved" $f'; mode default

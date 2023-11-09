@@ -1,0 +1,6 @@
+{{ .ModeName "move to workspace main" }}
+{{ $cfg := . }}
+{{ range $workspaceIdx, $workspace := .Workspaces }}
+    # Move to main screen
+    bindsym {{ $workspace }} move workspace {{$cfg.Workspace $workspace "main" }}; mode default;
+{{ end }}

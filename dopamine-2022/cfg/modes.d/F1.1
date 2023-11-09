@@ -1,0 +1,9 @@
+{{ .ModeName "switch-workspace" }}
+{{$cfg := .}}
+{{ range $workspaceIdx, $workspace := $cfg.Workspaces }}
+    bindsym {{ $workspace }} \
+    {{ range $screen,$output := $cfg.ScreenMap }} \
+    workspace {{$cfg.Workspace $workspace $screen}}; \
+    {{end}} \
+    ; mode default;
+{{ end }}

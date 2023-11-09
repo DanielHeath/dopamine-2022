@@ -1,0 +1,6 @@
+{{ .ModeName "move to workspace side" }}
+{{ $cfg := . }}
+{{ range $workspaceIdx, $workspace := .Workspaces }}
+    # Move to side screen
+    bindsym {{ $workspace }} move workspace {{$cfg.Workspace $workspace "left" }}; mode default;
+{{ end }}
