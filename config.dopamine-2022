@@ -1,0 +1,4672 @@
+# -*- Mode: Shell-script -*-
+# i3 configfile (v4)
+# i3 version 4.22 © 2009 Michael Stapelberg and contributors
+#
+
+set $dummy Please_read_the_comments_like_a_manual.
+
+# WHAT FEATURES DOES THIS CONFIG PROVIDE?
+
+# This config reflects EllaTheCat's advocacy of modes, marks and make.
+
+# Using i3 bindings without modifiers mod1 mod4 mod5, using function
+# key driven modes instead.
+
+# Containers are marked automatically with 3 digits displayed at the
+# RHS of the titlebar e.g.  [123]. This facilitates jumping to mark
+# and swapping with mark.
+
+# The entire configuration is held under git in a local repository
+# under one toplevel directory. Files are deployed to their runtime
+# locations by typing 'make' in the toplevel directory. Bash shell
+# scripts are examined by the Shellcheck utility and must pass to be
+# deployed. Deployment is atomic, all or nothing, a single failure
+# prevents deployment.
+
+# RELEASE HISTORY
+
+# Initial release brought up on Ubuntu 22.04.1 LTS Oct-Nov 2022.
+# 2022-11-27 i3 4.21-133-g126dacfa
+# Second release brought up on Ubuntu 22.04.1 LTS Feb-Mar 2023.
+# i3 version 4.22-35-g2a4576be
+
+# -*- Mode: Shell-script -*-
+#
+
+# (DEPRECATED) 1st & 2nd MODE SELECT KEYS
+
+set $_1st 117
+set $_2nd  94
+
+bindcode --release $_1st mode "$Primary"
+bindcode --release $_2nd mode "$Secondary"
+
+#
+# Done
+#
+
+# Please take care to preserve the non-blank line immediately above,
+# but don't worry about it for the moment.
+
+# MODIFIER KEYS ================================================== #
+
+# Define this modifier even if you think you will never use the
+# key. It's here because it's neither forbidden nor discouraged.
+# It is useful to keep nearly all of the standard bindings.
+
+set $mod Mod4
+
+# When moving or resizing a floating container by dragging the mouse,
+# holding down this key makes it easier to grab. Re-engineering this
+# to be modal cannot be justified. It isn't bound wih a key but with a
+# mouse button if you want to split hairs.
+
+floating_modifier Mod4
+
+# When dragging on a non-floating (tiling) container, clicking on the
+# titlebar first makes it easier to grab. The associated modifier key
+# option is deliberately removed.
+
+tiling_drag titlebar
+
+# i3 DEFAULT BINDINGS ============================================ #
+
+# The file cfg/keys44 is a set of bindings that provide the familiar
+# defaults shown in the i3 user's guide, with minor changes.
+
+# -*- Mode: Shell-script -*-
+#
+# cfg/keys44 - makes cfg/keys00 obsolete
+#
+#! DEFINE A TERMINAL BINDING ASAP
+#! By defining this so early, it is unlikely to fail, and will be there when you need it.
+bindsym $mod+Return exec --no-startup-id xfce4-terminal
+
+# kill focused window
+bindsym $mod+Shift+q kill
+
+# start dmenu (a program launcher)
+# bindsym $mod+d exec /usr/bin/dmenu_run
+bindsym Mod4+d fullscreen disable; exec synapse
+
+# change focus
+bindsym $mod+j focus left
+bindsym $mod+k focus down
+bindsym $mod+l focus up
+bindsym $mod+semicolon focus right
+
+# alternatively, you can use the cursor keys:
+bindsym $mod+Left focus left
+bindsym $mod+Down focus down
+bindsym $mod+Up focus up
+bindsym $mod+Right focus right
+
+# move focused window
+bindsym $mod+Shift+j move left
+bindsym $mod+Shift+k move down
+bindsym $mod+Shift+l move up
+bindsym $mod+Shift+semicolon move right
+
+# alternatively, you can use the cursor keys:
+bindsym $mod+Shift+Left move left
+bindsym $mod+Shift+Down move down
+bindsym $mod+Shift+Up move up
+bindsym $mod+Shift+Right move right
+
+# split in horizontal orientation
+bindsym $mod+h split h
+
+# split in vertical orientation
+bindsym $mod+v split v
+
+# enter fullscreen mode for the focused container
+bindsym $mod+f fullscreen toggle
+
+# change container layout (stacked, tabbed, default)
+bindsym $mod+s layout stacking
+bindsym $mod+w layout tabbed
+bindsym $mod+e layout default
+
+# toggle tiling / floating
+bindsym $mod+Shift+space floating toggle
+
+# change focus between tiling / floating windows
+bindsym $mod+space focus mode_toggle
+
+# focus the parent container
+bindsym $mod+a focus parent
+
+# focus the child container
+#bindsym $mod+d focus child
+
+#
+# To discourage the ten owrkspaces habit without drowning in the deep end EllaTheCat provides 3 workspaces.
+#
+
+# switch to workspace
+bindsym $mod+z workspace 1
+bindsym $mod+x workspace 2
+bindsym $mod+c workspace 3
+
+# move focused container to workspace
+bindsym $mod+Shift+z move workspace 1
+bindsym $mod+Shift+x move workspace 2
+bindsym $mod+Shift+c move workspace 3
+exec --no-startup-id /usr/lib/policykit-1-gnome/polkit-gnome-authentication-agent-1 &
+exec --no-startup-id /home/daniel/anaconda3/bin/cps &
+exec --no-startup-id feh --on-last-slide resume --bg-center ~/Pictures/backgrounds/out.jpg
+
+bindsym ctrl+q workspace $ws1-left;workspace $ws1;
+
+# hide_edge_borders smart_no_gaps
+# smart_borders no_gaps
+# Define names for workspaces
+set $ws1 "1"
+set $ws2 "2"
+set $ws3 "3"
+set $ws1-left "1"
+set $ws2-left "2"
+set $ws3-left "3"
+
+# Assign screens to workspaces
+workspace $ws1 output DP-4
+workspace $ws1-left output DP-1
+workspace $ws2 output DP-4
+workspace $ws2-left output DP-1
+workspace $ws3 output DP-4
+workspace $ws3-left output DP-1
+
+#
+# To encourage use of modes EllaTheCat prrovides this Swiss Army knife maintenance mode.
+#
+mode "$maintenance" {
+  #  Reload the [C]onfiguration file
+  bindsym c reload
+  # re art the [W]indow manager in place (preserves your layout/session, can be used to upgrade i3)
+  bindsym w restart
+
+  # # Old skool, shutdown/halt and reboot/restart. Letters match the options.
+  # bindsym h sudo /sbin/shutdown -h now
+  # bindsym r sudo /sbin/shutdown -r now
+
+  # XFCE is a popular DE used with i3 as WM. This doesn't need sudo and provides the usual options.
+  bindsym x xfce4-session-logout
+
+  # 'notify-send' is a must-have in my opinion, hence this test.
+  # They want to tell you so indulge them ;-)
+  bindsym a exec notify-send "Hi" "notify-send works"
+  bindsym space mode default
+  bindsym escape mode default
+}
+# Manjaro e for exit.
+bindsym $mod+Shift+e mode "$maintenance"
+
+#
+# Done,
+#
+
+# CURSOR KEYS ==================================================== #
+
+# Several modes have a cursor key arrangement where I have tried
+# hard to maintain consistency.
+
+# The familiar hjkl pattern of 'vi' has been used to name the $keys as
+# well as configure various sets of cursor keys to 'vi' style. Hardcore
+# i3 users might change the values to 'jkl;'.
+
+set $h h
+set $j j
+set $k k
+set $l l
+
+# Suppose 'i' and 'h' bindings are swapped for focus move and resize,
+# then this would facilitate a right handed WASD arrangement (ijkl).
+
+### set $h j
+### set $j k
+### set $k i
+### set $l l
+
+# OUTPUTS ======================================================== #
+
+# Outputs should be listed in left-to-right order, names as provided
+# by xrandr or the xubuntu Displays settings. Mine are hard coded as
+#
+# DP-1 DP-4
+#
+# Makefile.bash can be reconfigured by three envvars H2 H1 V1 such
+# that the user's output names are used in the final runtime config
+# loaded into i3 (but not in the local repo).
+#
+# 20221206 Revertes my configuration to DP-1 and DP-4 monitors
+# _without_  monitor or dummy monitor.
+
+# COLOURS ======================================================== #
+
+# Defaults changed to better distinguish are:
+# 1. green title bar and border when focused.
+# 2. gold title bar when focused inactive,
+# 3. grey title bar otherwise.
+# class | border | background | text | indicator | child_border
+
+client.focused  #333333 #00aa00 #ffffff #2e9ef4  #185522
+client.focused_inactive #333333 #555500 #dddddd #484e50  #5f676a
+client.unfocused  #333333 #444444 #bbbbbb #292d2e  #222222
+client.urgent  #880000 #444444 #ffffff #880000  #900000
+client.placeholder  #000000 #444444 #ffffff #000000  #0c0c0c
+client.background  #ffffff
+
+# FONT SETTINGS ================================================== #
+
+# Font for a.o. window titles. I think it was the only font back in
+# the day.
+
+font "pango:DejaVu Sans 12"
+
+# Font for i3-input (The red outline prompting text boxes that appear
+# during { visit | move container to | rename} workspace at the top
+# left of the window. I've deprecated i3-input in this config but
+# leave this here.
+
+set $i3inputfont "pango:DejaVu Sans 11"
+
+# FOCUS SETTINGS ================================================= #
+
+# Look these up in the i3 user's guide. These defaults are safe.
+# It's safe, but 'focus_follows_mouse yes' will drive you crazy.
+
+focus_follows_mouse no
+focus_wrapping off
+
+# WORKSPACE SETTINGS ============================================= #
+
+# Look these up in the i3 user's guide. These defaults are safe.
+
+workspace_auto_back_and_forth no
+workspace_layout default
+
+# COMPOSITOR ===================================================== #
+
+# As of 22.04 LTS I'm using picom. 20.04 LTS used compton, which would
+# collapse the Software Updater window to just a title bar whenever
+# the compositor was enabled. I've kept the workaround, to disable the
+# compositor when the Software Updater appears. For all I know it's
+# been fixed for ages.
+
+set $nocompositor exec --no-startup-id /usr/bin/killall -q picom
+
+# I3-CONFIG-BASH ================================================= #
+
+# When this config needs to use the bash shell, it calls
+# i3-config-bash, with one or two parameters. The first parameter is a
+# function in the script, the second is the function argument (list).
+
+# This structure makes it easier to test from the commandline. Here
+# are several examples:
+
+# i3-config-bash emacsinside toggle
+# i3-config-bash config poup
+# i3-config-bash move_workspace_to_output_interactive
+# i3-config-bash swap_two_workspaces_by_reference
+# i3-config-bash swap_two_containers_by_value
+# i3-config-bash rename_workspace
+# i3-config-bash dismiss_workspace_interactive
+
+# I3 INCLUDES ==================================================== #
+#
+# From the i3 user's guide, my emphasis,
+#
+# Variables are shared between all config files, but beware of the
+# following limitation:
+# You can define a variable and use it within an included file.
+# YOU CANNOT USE (IN THE PARENT FILE) A VARIABLE THAT WAS DEFINED
+# WITHIN AN INCLUDED FILE.
+
+# ETC INCLUDES =================================================== #
+
+# Explained in detail elsewhere, EllaTheCat (etc) includes behave like
+# C or C++ includes, a parent can use a variable declared in the child
+# file, provided that declaration precedes use. The include directive
+# for the included file is a "magic comment" that should be obviousm.
+
+# (REMOVED) THE 1ST & 2ND MODE SELECT KEYS ======================== #
+
+# This feature was removed for the second release and replaced with
+# a mode select method based on function keys.
+
+# The ist and 2nd mode keys were in different places according to
+# Keyboard layout restrictions. Disguised as a user preference this
+# was a recipe for confusion. EllaTheCat struggled.
+
+# (RETAINED) SPACE BAR ALWAYS SELECTS DEFAULT MODE
+
+#! The space bar, without exception, switches from any other mode to
+#! default mode. This is true for initial and secondary releases.
+
+# (REMOVED) PRIMARY MODE & PRIMARY MODE KEY
+
+# The intention behind Primaryr mode was to reduce the numder of
+# keystrokes for frequently used bindings. Rhis forced obscure
+# bindings to use a higher than average number of keystrokes and
+# obscure mode changes.
+
+# (New) FUNCTION KEYS AS MODE SELECT KEYS
+
+# The function keys F1 ... F12 are available on desktops and laptops,
+# the latter subject to the whims of the blue Fn key. The function
+# keys are not hardto reach.  There being (at least) 10 of them
+# suggests each mode could have its own key.
+
+# Applications reserve function keys: F1 for help, F5 for build, and
+# in particular F11 for fullscreen. i3 config files should use these
+# ten variables as one might use $mod for Mod4. F11 is never to be
+# bound. F12 is reserved.
+
+
+set $main1  F1 main
+set $main2  F2 main
+set $main3  F3 main
+set $main4  F4 main
+set $main5  F5 main
+set $main6  F6 main
+set $main7  F7 main
+set $main8  F8 main
+set $main9  F9 main
+set $main0 F10 main
+
+set $aux1  F1 aux
+set $aux2  F2 aux
+set $aux3  F3 aux
+set $aux4  F4 aux
+set $aux5  F5 aux
+set $aux6  F6 aux
+set $aux7  F7 aux
+set $aux8  F8 aux
+set $aux9  F9 aux
+set $aux0 F10 aux
+
+# Default mode function key bindings:
+# Note to self: KISS! Quoting tarpit.
+
+bindsym F1 mode "$main1"
+bindsym F2 mode "$main2"
+bindsym F3 mode "$main3"
+bindsym F4 mode "$main4"
+bindsym F5 mode "$main5"
+bindsym F6 mode "$main6"
+bindsym F7 mode "$main7"
+bindsym F8 mode "$main8"
+bindsym F9 mode "$main9"
+bindsym F10 mode "$main0"
+
+
+# There exist wired and wireless kayboards with the 18 keys of the
+# numeric keypad (numpad) plus Print, Scroll lock and Pause, used to
+# augment laptops. The xbindkeys utility can be used to provide ten
+# function keys from either of the numlock states, probably from the
+# navigation keys rather than the number keys.
+
+# SENDING FUNCTION KEYS TO THE APPLICATION
+
+# The F11 mode passes all keys straight through except for space
+# which, as always, returns to default mode. It is used to send
+# function key presses direct to the application.
+
+mode F11 {
+  bindsym space mode default
+  bindsym escape mode default
+}
+bindsym F11 mode F11
+
+# The command aliases q1 through q9 and g0 generate F1 through F10, qq
+# generates F11 and qp generates F12. See 'cfg/apps00'. They actually
+# send F11 to enter F11 mode, then the function key from within the
+# F11 mode, then space to return, as always, to default mode. The key
+# presses are separated by sleep(100ms), beware.
+
+# (NEW) GUIDELINES FOR DEFINING MODES
+
+# (0) With 10 function keys there are ten main modes plus default
+# mode. Each main mode may have an auxiliary mode (q.v.) attached to
+# it.
+
+# (1) Without exception, bind space to return to default mode.
+
+# (2) Restrict bindings to the 26 lower case letters and the 10 digits only.
+
+# (3) Choose keys according to some rule, mnemonic, positional,
+# clustering. A corollary is that a mode won't use all 36
+# bindings. Split the mode into main and auxiliary if it gets too
+# cumbersome.
+
+# (4) Define the 10 function keys within a (main) mode. A function key
+# should always enter the same (main) mode from all other (main) modes
+# as well as from default mode.
+
+# (5) Define the binding for the function key that enters this (main)
+# mode to either do nothing at all, or to enter an auxiliary mode
+# where such exists. Define the binding for the function key that
+# enters an auxiiary mode to return from the auxiliary mode to the
+# main mode.
+
+# DEFINE INTER MODE NAVIGATION
+
+# This example shows the two modes for the key F5, so you can see the
+# pattern. All ten files ae aleady defined for you and should not need
+# to be modified, because the window manager bindings other than these
+# mde navigation bindings are included from small text files.
+
+# Practice navigating around the ten main modes and their auxiliary
+# modes, and default mode, using function keys and space. keep an eye
+# on the Binding Mode Indicator(s) (q.v.) to know which mode you are
+# in when not in default mode.
+
+# The two include files per mode are written by users. They contain
+# the remaining bindings that do the actual work. These files will be
+# mildly volatile because users will never agree. In contrast this
+# file, config, is intended to be stable under git.
+
+# To Do: Explain required git management process.
+
+# DEFINE MODES F1-F9 F10 WITH MAKE
+
+# The ten files here are generated by Makefile. ETC includes don't
+# nest so several passes are required. These files have no include
+# directives, they have been fully expanded.
+
+#
+#
+#
+
+mode "$main1" {
+
+  bindsym F2 mode $main2
+  bindsym F3 mode $main3
+  bindsym F4 mode $main4
+  bindsym F5 mode $main5
+  bindsym F6 mode $main6
+  bindsym F7 mode $main7
+  bindsym F8 mode $main8
+  bindsym F9 mode $main9
+  bindsym F10 mode $main0
+
+  bindsym F1 mode $aux1
+
+  bindsym space mode default
+  bindsym escape mode default
+
+# #INSERT_MAIN1KEYS_HERE###
+}
+
+mode "$aux1" {
+
+  bindsym F2 mode $main2
+  bindsym F3 mode $main3
+  bindsym F4 mode $main4
+  bindsym F5 mode $main5
+  bindsym F6 mode $main6
+  bindsym F7 mode $main7
+  bindsym F8 mode $main8
+  bindsym F9 mode $main9
+  bindsym F10 mode $main0
+
+  bindsym F1 mode $main1
+
+  bindsym space mode default
+  bindsym escape mode default
+
+# #INSERT_AUX1KEYS_HERE###
+}
+
+#
+#
+#
+#
+#
+
+mode "$main2" {
+  bindsym F1 mode $main1
+
+  bindsym F3 mode $main3
+  bindsym F4 mode $main4
+  bindsym F5 mode $main5
+  bindsym F6 mode $main6
+  bindsym F7 mode $main7
+  bindsym F8 mode $main8
+  bindsym F9 mode $main9
+  bindsym F10 mode $main0
+
+  bindsym F2 mode $aux2
+
+  bindsym space mode default
+  bindsym escape mode default
+
+# #INSERT_MAIN2KEYS_HERE###
+}
+
+mode "$aux2" {
+  bindsym F1 mode $main1
+
+  bindsym F3 mode $main3
+  bindsym F4 mode $main4
+  bindsym F5 mode $main5
+  bindsym F6 mode $main6
+  bindsym F7 mode $main7
+  bindsym F8 mode $main8
+  bindsym F9 mode $main9
+  bindsym F10 mode $main0
+
+  bindsym F2 mode $main2
+
+  bindsym space mode default
+  bindsym escape mode default
+
+# #INSERT_AUX2KEYS_HERE###
+}
+
+#
+#
+#
+#
+#
+
+mode "$main3" {
+  bindsym F1 mode $main1
+  bindsym F2 mode $main2
+
+  bindsym F4 mode $main4
+  bindsym F5 mode $main5
+  bindsym F6 mode $main6
+  bindsym F7 mode $main7
+  bindsym F8 mode $main8
+  bindsym F9 mode $main9
+  bindsym F10 mode $main0
+
+  bindsym F3 mode $aux3
+
+  bindsym space mode default
+  bindsym escape mode default
+
+# #INSERT_MAIM3KEYS_HERE###
+}
+
+mode "$aux3" {
+  bindsym F1 mode $main1
+  bindsym F2 mode $main2
+
+  bindsym F4 mode $main4
+  bindsym F5 mode $main5
+  bindsym F6 mode $main6
+  bindsym F7 mode $main7
+  bindsym F8 mode $main8
+  bindsym F9 mode $main9
+  bindsym F10 mode $main0
+
+  bindsym F3 mode $main3
+
+  bindsym space mode default
+  bindsym escape mode default
+
+# #INSERT_AUX3KEYS_HERE###
+}
+
+#
+#
+#
+#
+#
+
+mode "$main4" {
+  bindsym F1 mode $main1
+  bindsym F2 mode $main2
+  bindsym F3 mode $main3
+
+  bindsym F5 mode $main5
+  bindsym F6 mode $main6
+  bindsym F7 mode $main7
+  bindsym F8 mode $main8
+  bindsym F9 mode $main9
+  bindsym F10 mode $main0
+
+  bindsym F4 mode $aux4
+
+  bindsym space mode default
+  bindsym escape mode default
+
+# #INSERT_MAIN4KEYS_HERE###
+}
+
+mode "$aux4" {
+  bindsym F1 mode $main1
+  bindsym F2 mode $main2
+  bindsym F3 mode $main3
+
+  bindsym F5 mode $main5
+  bindsym F6 mode $main6
+  bindsym F7 mode $main7
+  bindsym F8 mode $main8
+  bindsym F9 mode $main9
+  bindsym F10 mode $main0
+
+  bindsym F4 mode $main4
+
+  bindsym space mode default
+  bindsym escape mode default
+
+# #INSERT_AUX4KEYS_HERE###
+}
+
+#
+#
+#
+#
+#
+
+mode "$main5" {
+  bindsym F1 mode $main1
+  bindsym F2 mode $main2
+  bindsym F3 mode $main3
+  bindsym F4 mode $main4
+
+  bindsym F6 mode $main6
+  bindsym F7 mode $main7
+  bindsym F8 mode $main8
+  bindsym F9 mode $main9
+  bindsym F10 mode $main0
+
+  bindsym F5 mode $aux5
+
+  bindsym space mode default
+  bindsym escape mode default
+
+# #INSERT_MAIM5KEYS_HERE###
+}
+
+mode "$aux5" {
+  bindsym F1 mode $main1
+  bindsym F2 mode $main2
+  bindsym F3 mode $main3
+  bindsym F4 mode $main4
+
+  bindsym F6 mode $main6
+  bindsym F7 mode $main7
+  bindsym F8 mode $main8
+  bindsym F9 mode $main9
+  bindsym F10 mode $main0
+
+  bindsym F5 mode $main5
+
+  bindsym space mode default
+  bindsym escape mode default
+
+# #INSERT_AUX5KEYS_HERE###
+}
+
+#
+#
+#
+#
+#
+
+mode "$main6" {
+  bindsym F1 mode $main1
+  bindsym F2 mode $main2
+  bindsym F3 mode $main3
+  bindsym F4 mode $main4
+  bindsym F5 mode $main5
+
+  bindsym F7 mode $main7
+  bindsym F8 mode $main8
+  bindsym F9 mode $main9
+  bindsym F10 mode $main0
+
+  bindsym F6 mode $aux6
+
+  bindsym space mode default
+  bindsym escape mode default
+
+# #INSERT_MAIN6KEYS_HERE###
+}
+
+mode "$aux6" {
+  bindsym F1 mode $main1
+  bindsym F2 mode $main2
+  bindsym F3 mode $main3
+  bindsym F4 mode $main4
+  bindsym F5 mode $main5
+
+  bindsym F7 mode $main7
+  bindsym F8 mode $main8
+  bindsym F9 mode $main9
+  bindsym F10 mode $main0
+
+  bindsym F6 mode $main6
+
+  bindsym space mode default
+  bindsym escape mode default
+
+# #INSERT_AUX6KEYS_HERE###
+}
+
+#
+#
+#
+#
+#
+#
+
+mode "$main7" {
+  bindsym F1 mode $main1
+  bindsym F2 mode $main2
+  bindsym F3 mode $main3
+  bindsym F4 mode $main4
+  bindsym F5 mode $main5
+  bindsym F6 mode $main6
+
+  bindsym F8 mode $main8
+  bindsym F9 mode $main9
+  bindsym F10 mode $main0
+
+  bindsym F7 mode $aux7
+
+  bindsym space mode default
+  bindsym escape mode default
+
+# #INSERT_MAIN7KEYS_HERE###
+}
+
+mode "$aux7" {
+  bindsym F1 mode $main1
+  bindsym F2 mode $main2
+  bindsym F3 mode $main3
+  bindsym F4 mode $main4
+  bindsym F5 mode $main5
+  bindsym F6 mode $main6
+
+  bindsym F8 mode $main8
+  bindsym F9 mode $main9
+  bindsym F10 mode $main0
+
+  bindsym F7 mode $main7
+
+  bindsym space mode default
+  bindsym escape mode default
+
+# #INSERT_AUX7KEYS_HERE###
+}
+
+#
+#
+#
+#
+#
+#
+
+mode "$main8" {
+  bindsym F1 mode $main1
+  bindsym F2 mode $main2
+  bindsym F3 mode $main3
+  bindsym F4 mode $main4
+  bindsym F5 mode $main5
+  bindsym F6 mode $main6
+  bindsym F7 mode $main7
+
+  bindsym F9 mode $main9
+  bindsym F10 mode $main0
+
+  bindsym F8 mode $aux8
+
+  bindsym space mode default
+  bindsym escape mode default
+
+# #INSERT_MAIN8KEYS_HERE###
+}
+
+mode "$aux8" {
+  bindsym F1 mode $main1
+  bindsym F2 mode $main2
+  bindsym F3 mode $main3
+  bindsym F4 mode $main4
+  bindsym F5 mode $main5
+  bindsym F6 mode $main6
+  bindsym F7 mode $main7
+
+  bindsym F9 mode $main9
+  bindsym F10 mode $main0
+
+  bindsym F8 mode $main8
+
+  bindsym space mode default
+  bindsym escape mode default
+
+# #INSERT_AUX8KEYS_HERE###
+}
+
+#
+#
+#
+#
+#
+
+mode "$main9" {
+  bindsym F1 mode $main1
+  bindsym F2 mode $main2
+  bindsym F3 mode $main3
+  bindsym F4 mode $main4
+  bindsym F5 mode $main5
+  bindsym F6 mode $main6
+  bindsym F7 mode $main7
+  bindsym F8 mode $main8
+
+  bindsym F10 mode $main0
+
+  bindsym F9 mode $aux9
+
+  bindsym space mode default
+  bindsym escape mode default
+
+# #INSERT_MAIN9KEYS_HERE###
+}
+
+mode "$aux9" {
+  bindsym F1 mode $main1
+  bindsym F2 mode $main2
+  bindsym F3 mode $main3
+  bindsym F4 mode $main4
+  bindsym F5 mode $main5
+  bindsym F6 mode $main6
+  bindsym F7 mode $main7
+  bindsym F8 mode $main8
+
+  bindsym F10 mode $main0
+
+  bindsym F9 mode $main9
+
+  bindsym space mode default
+  bindsym escape mode default
+
+# #INSERT_AUX9KEYS_HERE###
+}
+
+#
+#
+#
+#
+#
+#
+
+mode "$main0" {
+  bindsym F1 mode $main1
+  bindsym F2 mode $main2
+  bindsym F3 mode $main3
+  bindsym F4 mode $main4
+  bindsym F5 mode $main5
+  bindsym F6 mode $main6
+  bindsym F7 mode $main7
+  bindsym F8 mode $main8
+  bindsym F9 mode $main9
+
+  bindsym F10 mode $aux0
+
+  bindsym space mode default
+  bindsym escape mode default
+
+# #INSERT_MAIN0KEYS_HERE###
+}
+
+mode "$aux0" {
+  bindsym F1 mode $main1
+  bindsym F2 mode $main2
+  bindsym F3 mode $main3
+  bindsym F4 mode $main4
+  bindsym F5 mode $main5
+  bindsym F6 mode $main6
+  bindsym F7 mode $main7
+  bindsym F8 mode $main8
+  bindsym F9 mode $main9
+
+  bindsym F10 mode $main0
+
+  bindsym space mode default
+  bindsym escape mode default
+
+# #INSERT_AUX0KEYS_HERE###
+}
+
+#
+#
+#
+
+# (NEw) FUNCTION KEYS ON THE LEFT VS ABOVE ======================= #
+
+# My personal preference is for function keys laid out as a 2x5 grid
+# on the left as for the IBM PC XT and Sun workstations back in the
+# day.  It's disningenuous to argue that all function keys are well
+# positioned.  For the now standard arrangement, I would say F5
+# through F10 are well placed relative to the (HJKL) home keys.  For
+# languages written left-to-right, I woulld say they favour the left
+# side fo modifier keys and special keys like Escape and Tab.  There
+# is a case for using the accent grave and backslash keys on the left
+# as mode select keys.
+
+# Too much choice, too much configurability, lead to decision
+# paralysis in users and is painful to document, as the next paragraph
+# demonstrates.
+
+# ThERE ARE TEN FUNCTION KEYS AND THEiR NUMBER SHALL BE 10 ======= #
+
+# Consequently, there shall be ten function keys, and where they are
+# above the main keyboard F3 through F10 shall be available in situ
+# and shall be mode select keys.  The two character command aliases
+# q1, ..., q9 and q0, shall send F1 through F10 to the application,
+# and qq shall send F11 (because fullscreen).  The keys F1 ad F2 may
+# be swapped with accent grave or backslash, such that accent grave
+# (backslash) enters the same mode as F1 (F2) would by default, while
+# F1 (F2) behaves just like accent grave (backslash). This can be
+# arranged using xbindkeys or xmodmap and need not impact i3 at all,
+# i3 sees the swapped keys.  The keys F11 and F12 shall not be bound
+# by i3.
+
+# You can have any mixtute of (for want of a name) "ordinary modes"
+# and "command modes" but nore than ten in total given ten function
+# keys. Of course each functiom key can have its own command mode
+# bindings.
+
+# (NEW) SYNTAX OF BINDING KEY SEQUENCES (by example) ============= #
+
+# F1 m  // Press nd release each key im turn.
+
+# SUPER_L+d // Hold down the left Windows key acting as a modifier, press and release the
+# 'd' key.
+
+# SUPER_L+D // Hold down the left Windows key acting as a modifier,
+# and any shift key, press and release the 'd' key.
+
+# COMMENTS & ONLINE DOCUMENTATION ================================= #
+
+# Comments in bash begin with hash (octothorpe) and it's a safe bet
+# that the next character is whitespace or another hash. These comments
+# will be stripped from the deployed config file to yield the digest,
+# online documentation for bindings and modes. In order to keep some
+# commments in the digest, the hash at the beginning is followed by an
+# exclamation mark (shriek).
+
+# I3BAR BINDING MODE INDICATOR  ==================================== #
+
+# If you don't want the i3bar there is the alternative Binding Mode
+# Indicator, discussed in the next section. The i3bar section in this
+# file lets you configure the appearance or absence of the binding mode
+# indicator, workspace tabs and i3status components of the i3bar.
+
+# When you enter a mode other than default, a black-on-yellow Binding
+# Mode Indicator appears alongside the workspaces on the i3bar. The
+# text is actually the truenane of the mode. The truenames of modes
+# must be unique.
+
+# In order to decode the json sent from the subscription to binding
+# events the :mode: is enclosed in colons; it is in effect a static
+# truename. The :mode: is followed by a list of bound keys arrnged to
+# jog the memory eg hjkl is a cursor keypad. I made a fuss about
+# :mode: being static because the key lists will ineviably change.
+
+# BE CAREFUL! The i3 user's guide $4.6 "Binding Modes" shows that the
+# allowed special characters are colon and square bXCrackets, and that
+# there are no enclosing quotes.
+
+# ALTERNATIVE BINDING MODE INDICATOR ============================= #
+
+# The 'config' function in i3-config-bash provides code that posts a
+# notification (notify-send) in response to the binding event that is
+# propagated when the mode is changed.
+
+# THE MODES (at last!) =========================================== #
+
+# Ruler is 48 chars ->  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+set $Primary  :SingleTap1st:  q w ex a s d fmry gh jk l n z vb
+set $AltPrimary  :DoubleTap1st:  q et fmry gsa
+
+set $Dismiss  :dismiss:  s vw [f]loat o b [l]ogout
+set $FloatingGroups  :floating groups: q [u]ser a s
+set $OutputGroups  :output groups:  q zxc a s
+
+set $cursorFocus  :focus:  et uiop asd fg hjkl zxc mry
+set $cursorMove  :move:  w et uiop asd hjkl zx c bv fry
+set $cursorResize  :resize:  et uiop asdg hjkl fmy
+set $Layouts  :layouts:  dst xy ewm io fmr
+
+set $Settings  :settings: s
+set $SoundSettings  :sound:  lu b fsr
+
+set $AlsaFront  :alsafront: Press E R C listen
+set $AlsaSide  :alsaside:  Press E R  listen
+set $AlsaRear  :alsarear:  Press E R C listen
+
+set $Zmode  :z mode: self-insert, except space
+
+#
+# The 1st mode key displaces an unshifted character. Sometimes you
+# want to type that character, other times you hit the mode key
+# intending to type the character.
+#
+# It's called the Z mode because Z is adjacent to a recommended mode
+# sect key position, the one to its left that types backslash.
+#
+
+mode "$Zmode" {
+  #! Insert a backslash (or other character except space), optionally type more characters, or type nothing, space returns to default mode.
+  bindsym space mode default
+  bindsym escape mode default
+}
+
+mode "$Primary" {
+  #! Dismiss (kill) singly or in batches.
+  bindsym q mode "$Dismiss"
+
+  #! Move a workspace to an output using a dmenu to choose them both.
+  bindsym w exec --no-startup-id  ~/local/i3/bin/i3-config-bash  move_workspace_to_output_interactive
+
+  #! [ex]change == swap two workspaces using a dmenu to choose them both.
+  bindsym e exec --no-startup-id  ~/local/i3/bin/i3-config-bash swap_two_workspaces_by_reference1
+
+  #! Set a container to be [t]iling, i.e. Floating Disable, because
+  #! Floating Toggle is playing silly buggers.  Resize mode is
+  #! adjacentt. Please try asd to perform Floating Enable with
+  #! resize.
+  bindsym t floating disable
+  bindsym u floating enable, resize set 30 ppt 30 ppt, move position center;
+
+  #! Move the current workspace to the speciied output.
+  bindsym i exec --no-startup-id  ~/local/i3/bin/i3-config-bash  move_workspace_to_output DP-1
+  bindsym o exec --no-startup-id  ~/local/i3/bin/i3-config-bash  move_workspace_to_output DP-4
+  bindsym p exec --no-startup-id  ~/local/i3/bin/i3-config-bash  move_workspace_to_output
+
+  #! [A]ttention! Visit a workspace with a red tab. NB mpv triggers this when mpv starts.
+  bindsym a [urgent="latest"] focus
+  #! Access to specific settings modes. SoundSettings is the first, anticipate more to come.
+  bindsym s mode "$Settings"
+  #! Command prompt and mini-menu.
+  bindsym d exec --no-startup-id  ~/local/i3/bin/i3-config-bash qmenu show
+
+  #! These four modes are directly accessible from each other via shared bindings.
+  bindsym f mode "$cursorFocus"
+  bindsym m mode "$cursorMove"
+  bindsym r mode "$cursorResize"
+  bindsym y mode "$laYouts"
+  # Modifiers incur no overheads when a use case entangles focus,
+  # move, layout. Modes incur an overhead when the mode changes. The
+  # least overhead is when each of the modes in a group can change
+  # to any other mode in the group with one keypress and one
+  # transition.
+
+  # I started with making the cursor keys HJKL common to focus move
+  # resize. I then bound keys FMR to go direct to another of the
+  # modes in the group. Keys that would have gone direct to where
+  # they already were could be freed up. 20221203: The layout mode
+  # now has direct links to and from the aforementioned {focus,
+  # move, resize} The letter Y is associated with la[Y]out because L
+  # is a common cursor key).
+
+  #! embiGGen windows to fill one or all monitor screens.
+  bindsym  g floating disable, fullscreen toggle;
+  bindsym $mod+g floating disable, fullscreen toggle global;
+
+
+  #! Rotate workspaces view in front of a backdrop. EXPERIMENTAL.
+  bindsym k  exec --no-startup-id  ~/local/i3/bin/i3-config-bash rotate backward
+  bindsym j exec --no-startup-id  ~/local/i3/bin/i3-config-bash rotate forward
+
+  #! This is how to type a character when the usual unshifted key is
+  #! now the 1st mode key. It must be done for Primary and AltPrimary
+  #! modes.
+  bindsym z mode "$Zmode", focus;
+
+  #! [ex]change == swap the contents of two containers using a dmenu to chose both marks.
+  bindsym x exec --no-startup-id  ~/local/i3/bin/i3-config-bash swap_two_containers_by_value
+  bindsym c nop
+
+  #! Open a terminal, preceded by a vertical or horizontal split.
+  bindsym v split v, exec --no-startup-id xfce4-terminal
+  bindsym b split h, exec --no-startup-id xfce4-terminal
+  # 20221203: Consistency restored. Use keys v and b because they
+  # are mutually adjacent and because b looks quite like h, given
+  # hjkl cursorkeys. Do not transpose split direction in 'split and
+  # launch' bindings, it is not user-friendly to go against i3 here.
+
+  #! Change the (N)ame or (N)umber of a named-or-numbered workspace.
+  bindsym n exec --no-startup-id  ~/local/i3/bin/i3-config-bash  rename_workspace
+
+  # Control-X is an Emacs command prefix, Suppose you type it
+  # forgetting that you must hit space to enter default mode.  This
+  # sneaky binding catches control-x, enters default mode, then
+  # restores the control-x using xdotool.
+  bindsym Control+x mode default,  exec --no-startup-id xdotool key ctrl+x
+
+  #! Toggle between Primary and AltPrimary modes.
+  bindcode --release "$_1st" mode "$AltPrimary"
+  bindcode --release "$_2nd" mode "$Secondary"
+
+  bindsym space mode default
+  bindsym escape mode default
+}
+
+mode "$AltPrimary" {
+
+  #! Dismiss (kill) singly or in batches.
+  bindsym q mode "$Dismiss"
+  bindsym w nop
+  bindsym e nop
+  bindsym t nop
+
+  bindsym f mode "$cursorFocus"
+  bindsym m mode "$cursorMove"
+  bindsym r mode "$cursorResize"
+  bindsym y mode "$Layouts"
+
+  # Mark navigation, interactive dmenus (no numpad).
+  bindsym g exec --no-startup-id ~/local/i3/bin/i3-config-bash goto_mark_interactive
+  bindsym s exec --no-startup-id ~/local/i3/bin/i3-config-bash swap_mark_interactive
+  bindsym a exec --no-startup-id ~/local/i3/bin/i3-config-bash auto_mark_container
+  bindsym d nop
+
+  #! This is how to type a character when the usual unshifted key is now the 1st mode key. It must be done for Primary and AltPrimary modes.
+  bindsym z mode "$Zmode", focus;
+  bindsym x nop
+  bindsym c nop
+
+  bindsym v split v
+  bindsym b split h
+  bindsym n nop
+
+  #! Emacs users who forget to return to default mode before saving might lose work so this attempts to save the day. Vi users might want to substitute C-x with a colon.
+  bindsym Control+x [title="Emacs"] mode default,  exec --no-startup-id xdotool key ctrl+x;
+
+  #! Toggle between AltPrimary and Primary modes.
+  bindcode --release "$_1st" mode "$Primary"
+  bindcode --release "$_2nd" mode "$Secondary"
+
+  bindsym space mode default
+  bindsym escape mode default
+}
+
+mode "$FloatingGroups" {
+  #! Dismiss containers in groups defined on-the-fly
+
+  #! Toggling a tiled by default container to floating marks it for deletion.
+
+  bindsym t floating toggle
+
+  #! Dismiss all tiled by default containers subsequently set to floating (recent change request, agreed).
+  bindsym u [floating_from="user"] kill
+  bindsym a [floating_from="auto"] kill
+
+  #! Dismiss a single container.
+  bindsym s kill
+
+  bindsym q mode "$Dismiss"
+  bindsym space mode default
+  bindsym escape mode default
+}
+
+mode "$OutputGroups" {
+  #! Dismiss all containers in all workspaces on the specified output(s).
+
+  #! Dismiss all containers in the specified output and re-enter dismiss mode.
+  bindsym z mode "$Dismiss", exec --no-startup-id  ~/local/i3/bin/i3-config-bash dismiss_output DP-1;
+  bindsym x mode "$Dismiss", exec --no-startup-id  ~/local/i3/bin/i3-config-bash dismiss_output DP-4;
+  bindsym c mode "$Dismiss", exec --no-startup-id  ~/local/i3/bin/i3-config-bash dismiss_output ;
+  #! Dismiss all containers in [a]ll outputs and re-enter dismiss mode.
+  bindsym a mode "$Dismiss", exec --no-startup-id  ~/local/i3/bin/i3-config-bash dismiss_output all
+
+  #! Dismiss a single container.
+  bindsym s kill
+
+  bindsym q mode "$Dismiss"
+  bindsym space mode default
+  bindsym escape mode default
+}
+
+
+mode "$Dismiss" {
+  #! Dismiss containers singly or in batches.
+
+  #! Dismiss a single container AND return to default mode.
+  bindsym s kill, mode default;
+
+  #! Dismiss all containers in the currently focused workspace.
+  bindsym v exec --no-startup-id  ~/local/i3/bin/i3-config-bash  dismiss_workspace_interactive current
+
+  #! Dismiss all containers in selected workspaces. Workspaces are selected from a menu and subsequently dismissed one-at-a-time to encourage the automatic removal of their associated workspace tabs.
+  bindsym w exec --no-startup-id  ~/local/i3/bin/i3-config-bash  dismiss_workspace_interactive menu
+
+  #! Dismiss containers in groups defined on-the-fly. If a container is tiling by default, and a user sets it to floating, only then is it dismissed.
+  bindsym f mode "$FloatingGroups"
+  #! Dismiss all containers for all workspaces on the specified outputs. Two-step procedure to avoid mistakes. Press this key then choose or cancel.
+  bindsym o mode "OutputGroups"
+
+  #! Take a [b]reak, [b]lank to avoid burn-in, save power.
+  bindsym --release b mode default,  exec --no-startup-id xset dpms force off;
+
+  bindsym --release l mode default, exec --no-startup-id  ~/local/i3/bin/i3-config-bash session logout;
+
+  bindsym Control+x mode default,  exec --no-startup-id xdotool key ctrl+x
+
+  bindsym space mode default
+  bindsym escape mode default
+}
+
+mode "$cursorFocus" {
+
+  #!
+  bindsym q nop
+  bindsym w nop
+
+  #! Toggle the focus to work on tiled or floating.
+  bindsym e mode default, focus mode_toggle;
+  #! Toggle a container between floating|tiling.
+  bindsym t floating toggle
+
+  # Focus an adjacent workspace, wrap around within an output.
+  bindsym u workspace prev_on_output
+  bindsym i workspace next_on_output
+  #! Focus an adjacent workspace, wrap around across all outputs.
+  bindsym o workspace prev
+  bindsym p workspace next
+  #! Focus [A]dult, [S]on or [D]aughter.
+  bindsym a focus parent
+  bindsym s focus child
+  bindsym d focus child
+  #! Focus <mumble>
+  bindsym f focus prev
+  bindsym g focus next
+  #! vi-style cursor keys for focus.
+  bindsym $h focus left
+  bindsym $j focus down
+  bindsym $k focus up
+  bindsym $l focus right
+
+  #! Focus an unspecified container on specified output, e.g. zxc = left middle right
+  bindsym z focus output DP-1,  exec --no-startup-id i3-config-bash qmenu number=2;
+  bindsym x focus output DP-4,  exec --no-startup-id i3-config-bash qmenu number=1;
+  bindsym c focus output ,  exec --no-startup-id i3-config-bash qmenu number=0;
+
+  bindsym v split v
+  bindsym b split h
+  bindsym n nop
+
+  #! Direct transitions between {focus move resize layout} modes.
+  bindsym m mode "$cursorMove"
+  bindsym r mode "$cursorResize"
+  bindsym y mode "$Layouts"
+
+  bindsym Control+x mode default,  exec --no-startup-id xdotool key ctrl+x
+
+  bindsym space mode default
+  bindsym escape mode default
+}
+
+# The focus, move, resize modes use common cursor key bindings.
+mode "$cursorMove" {
+
+  bindsym q nop
+
+  #! Move a named-or-numbered WORKSPACE to an OUTPUT interactively. Select the workspace aand output in either order using a menu.
+  bindsym w exec --no-startup-id  ~/local/i3/bin/i3-config-bash  move_workspace_to_output_interactive
+
+  #! Toggle the focus to work on tiled or floating.
+  bindsym e mode default, focus mode_toggle;
+  #! Toggle a container between floating|tiled.
+  bindsym t floating toggle
+
+  #! Focus an adjacent workspace, wrap around within an output.
+  bindsym u workspace prev_on_output
+  bindsym i workspace next_on_output
+  #! Focus an adjacent workspace, wrap around across all outputs.
+  bindsym o workspace prev
+  bindsym p workspace next
+
+  #! Move a CONTAINER to an OUTPUT.
+  bindsym a mode default, move container to output DP-1;
+  bindsym s mode default, move container to output DP-4;
+  bindsym d mode default, move container to output ;
+
+  bindsym g nop
+
+  #! vi-style cursor keys for movement.
+  bindsym $h move left
+  bindsym $j move down
+  bindsym $k move up
+  bindsym $l move right
+
+  #! Move a container to an adjacent workspace.
+  bindsym z move container to workspace prev
+  bindsym x move container to workspace next
+
+  #! Move a container to a named-or-numbered workspace but do not move.
+  bindsym c exec --no-startup-id  ~/local/i3/bin/i3-config-bash  move_container_to_workspace
+
+  bindsym v split v
+  bindsym b split h
+
+  bindsym n nop
+  bindsym m nop
+
+  #! Direct transition between {focus move resize layout} modes.
+  bindsym f mode "$cursorFocus"
+  bindsym r mode "$cursorResize"
+  bindsym y mode "$Layouts"
+
+  bindsym Control+x mode default,  exec --no-startup-id xdotool key ctrl+x
+
+  bindsym space mode default
+  bindsym escape mode default
+}
+
+mode "$cursorResize" {
+  #! Resize.
+
+  bindsym q nop
+  bindsym w nop
+
+  #! Toggle the focus to work on tiled or floating.
+  bindsym e mode default, focus mode_toggle;
+  #! Toggle a container between floating|tiled.
+  bindsym t floating toggle
+
+  #
+  bindsym u workspace prev_on_output
+  bindsym i workspace next_on_output
+  bindsym o workspace prev
+  bindsym p workspace next
+
+  bindsym a floating enable,  resize set 50 ppt 50 ppt, move position center;
+  bindsym s floating enable,  resize set 70 ppt 70 ppt, move position center;
+  bindsym d floating enable,  resize set 90 ppt 90 ppt, move position center;
+  bindsym g floating enable,  resize set 100 ppt 96 ppt, move position center;
+
+  #! vi-style cursor keys for movement.
+  bindsym $h resize shrink width 10 px or 5 ppt
+  bindsym $j resize shrink height 10 px or 5 ppt
+  bindsym $k resize grow height 10 px or 5 ppt
+  bindsym $l resize grow width 10 px or 5 ppt
+
+  #! Direct transition between {focus move resize layout} modes.
+  bindsym f mode "$cursorFocus"
+  bindsym m mode "$cursorMove"
+  bindsym y mode "$Layouts"
+
+  bindsym v split v
+  bindsym b split h
+
+  bindsym Control+x mode default,  exec --no-startup-id xdotool key ctrl+x
+
+  bindsym space mode default
+  bindsym escape mode default
+}
+
+mode "$Layouts" {
+  #! How containers are arranged in workspaces.
+
+  bindsym d mode default, layout default;
+  bindsym s mode default, layout stacking;
+  bindsym t mode default, layout tabbed;
+  bindsym b mode default, layout splith;
+  bindsym v mode default, layout splitv;
+
+  #! Pivot. Does not return to default mode unlike most of the others.
+  bindsym p layout toggle split;
+
+  #! Pivot. With A focused, change the column AB into the [r]ow AB.
+  bindsym x mode default,  focus down, split h, focus up, move down, move left;
+  #! Pivot. With A focused, change the row AB into the [c]olumn AB.
+  bindsym y mode default,  focus right, split v, focus left, move right, move up ;
+
+  #! Workspace i3 is a "waiting room" for entry to the scratchpad.
+  bindsym e [workspace="i3" instance="xfce4-terminal" title="Emacs inside"] move scratchpad
+  bindsym w [workspace="i3" instance="xterm" title="*watcher"] move scratchpad
+  bindsym h [workspace="i3" instance="xterm" title="*headend"] move scratchpad
+
+  bindsym i move scratchpad
+  bindsym o scratchpad show
+
+  #! Direct transition between {focus move resize layout} modes.
+  bindsym f mode "$cursorFocus"
+  bindsym m mode "$cursorMove"
+  bindsym r mode "$cursorResize"
+
+  bindsym Control+x mode default,  exec --no-startup-id xdotool key ctrl+x
+
+  bindsym space mode default
+  bindsym escape mode default
+}
+
+# ================================================================ #
+
+mode "$Settings" {
+  # The 's' key is available for a direct jump to here but I prefer
+  # the familiar Control Panel or Settings (Manager) hierarchy.
+  bindsym s mode "$SoundSettings"
+
+  bindsym Control+x mode default,  exec --no-startup-id xdotool key ctrl+x
+  bindsym space mode default
+  bindsym escape mode default
+}
+
+mode "$SoundSettings" {
+  # Loopback. Source (20kHz) smartphone audio, at cinema / theatre
+  # quality. Input 3.5 mm line in routed back out from PC over USB
+  # to Nobsound 50W+50W amplifier and Ditton speakers. Loud and
+  # clear. If I don't unload the module first it loads every time.
+  bindsym l exec --no-startup-id  pacmd load-module module-loopback latency_msec=10
+  bindsym u exec --no-startup-id  pacmd unload-module module-loopback
+  # Show a list of bluetooth beacons and devices so you can route
+  # bluetooth to various headphons, amplifiers etc. I put this on
+  # workspace 'au' (audio) alongside pavucontrol to help me trace
+  # and route audio.
+  bindsym b exec --no-startup-id blueman-manager
+
+  #! Test front speakers.
+  bindsym f mode "$AlsaFront"
+  #! Test side speakers.
+  bindsym s mode "$AlsaSide"
+  #! Test rear speakers.
+  bindsym r mode "$AlsaRear"
+
+  bindsym Control+x mode default,  exec --no-startup-id xdotool key ctrl+x
+
+  bindsym space mode default
+  bindsym escape mode default
+}
+
+#
+# Speaker Check modes
+#
+# I only have 2 channel stereo but I want it the correct way round.
+# Ubuntu supplies 8 handy mono files named by position. Type two
+# letters e,g SL for Side Left.
+#
+# Compare and contrast doing the same front speaker tests as secondary
+# mode commands {fl,fr,fc,fe} in cfg/apps00. It's easy to define such
+# conmands but it's quicker to use the bindings here.
+#
+# Writing nested modes like this is fun, but commands in apps00 are
+# the preferred approach.
+#
+
+mode "$AlsaFront" {
+  #! Say the full names of the front speakers.
+  bindsym l exec --no-startup-id  /usr/bin/play -c 2 -r 22050 /usr/share/sounds/alsa/Front_Left.wav remix 1 0
+  bindsym r exec --no-startup-id  /usr/bin/play -c 2 -r 22050 /usr/share/sounds/alsa/Front_Right.wav remix 0 1
+  # "Center" speakers are usually a woofer on low-end kit so drop
+  # the sampling rate for a slowly enunciated bass voice.
+  bindsym c exec --no-startup-id  /usr/bin/play -c 2 -r 16000 /usr/share/sounds/alsa/Front_Center.wav remix 1 1
+  # The letter L for left is distant from the others.  Using E for
+  # left (which is indeed to the l[e]ft of R) makes a nice cluster.
+  bindsym e exec --no-startup-id  /usr/bin/play -c 2 -r 22050 /usr/share/sounds/alsa/Front_Left.wav remix 1 0
+
+  bindsym s mode "$SoundSettings"
+  bindsym space mode default
+  bindsym escape mode default
+}
+
+mode "$AlsaSide" {
+  #! Say the full names of the side speakers.
+  bindsym l nop
+  bindsym r nop
+
+  #! Direct jump to ...
+  bindsym s mode "$SoundSettings"
+  bindsym space mode default
+  bindsym escape mode default
+  }
+
+mode "$AlsaRear" {
+  #! Say the full names of the rear speakers.
+  bindsym l nop
+  bindsym r nop
+  bindsym c nop
+
+  bindsym s mode "$SoundSettings"
+  bindsym space mode default
+  bindsym escape mode default
+  }
+
+# ================================================================ #
+
+set $Secondary  :SingleTap2nd:
+set $AltSecondary  :DoubleTap2nd:
+
+#
+# The root of a fully populated tree of 26 branches and 36 leaves
+# representing two keystrokes [a-z][a-z] or [a-z][0-9].
+#
+mode "$Secondary" {
+  bindsym q mode "z_q"
+  bindsym w mode "z_w"
+  bindsym e mode "z_e"
+  bindsym r mode "z_r"
+  bindsym t mode "z_t"
+  bindsym y mode "z_y"
+  bindsym u mode "z_u"
+  bindsym i mode "z_i"
+  bindsym o mode "z_o"
+  bindsym p mode "z_p"
+  bindsym a mode "z_a"
+  bindsym s mode "z_s"
+  bindsym d mode "z_d"
+  bindsym f mode "z_f"
+  bindsym g mode "z_g"
+  bindsym h mode "z_h"
+  bindsym j mode "z_j"
+  bindsym k mode "z_k"
+  bindsym l mode "z_l"
+  bindsym z mode "z_z"
+  bindsym x mode "z_x"
+  bindsym c mode "z_c"
+  bindsym v mode "z_v"
+  bindsym b mode "z_b"
+  bindsym n mode "z_n"
+  bindsym m mode "z_m"
+
+  bindcode --release $_2nd mode "$AltSecondary"
+  bindsym space mode default
+  bindsym escape mode default
+}
+
+mode "$AltSecondary" {
+  # Mnemonics: Mark, eXchange, Workspace, Container.  This value is
+  # retrieved after the digits have been read in a state transition
+  # sequence along one path.
+  bindsym m mode default, exec --no-startup-id echo "m" > /dev/shm/"$USER"/i3/state/head, mode  x_h ;
+  bindsym x mode default, exec --no-startup-id echo "x" > /dev/shm/"$USER"/i3/state/head, mode  x_h ;
+  bindsym w mode default, exec --no-startup-id echo "w" > /dev/shm/"$USER"/i3/state/head, mode x_t0 ;
+  bindsym c mode default, exec --no-startup-id echo "c" > /dev/shm/"$USER"/i3/state/head, mode x_t0 ;
+
+  bindcode --release $_2nd mode "$Secondary"
+  bindsym space mode default
+  bindsym escape mode default
+}
+
+#
+# Default mode absolutely minimal bindings using dedicated keys.
+#
+bindsym F15 mode x_h,  exec --no-startup-id echo "m" > /dev/shm/"$USER"/i3/state/head ;
+bindsym F16 mode x_h,  exec --no-startup-id echo "x" > /dev/shm/"$USER"/i3/state/head ;
+# Workspaces 010 through 099 with ONE leading zero and TWO keypresses.
+bindsym F17 mode x_t0,  exec --no-startup-id echo "w" > /dev/shm/"$USER"/i3/state/head ;
+bindsym F18 mode x_t0,  exec --no-startup-id echo "c" > /dev/shm/"$USER"/i3/state/head ;
+# Workspaces 000 through 009 with TWO leading zeroes and ONE keypress.
+# Since we do not recognise workspaces with these numbers, commands do
+# other more interesting things.
+bindsym F19 mode default,  exec --no-startup-id echo "w" > /dev/shm/"$USER"/i3/state/head, mode x_u0 ;
+
+# ================================================================ #
+
+# $Secondary: Forward the two single characters $1 $2 like this:
+set $send mode default, exec --no-startup-id ~/local/i3/bin/i3-config-bash
+# $AltSecondary: Forward the three digit value $1 like this:
+set $emit mode default, exec --no-startup-id ~/local/i3/bin/i3-config-bash
+
+# ================================================================ #
+
+# This example of including a file uses EllaTheCat's method in which
+# text is inserted at the start of the line containing a magic comment
+# consisting of three hashes, the word INSERT, an underscore, a label
+# (CFG03 or CFG06), an underscore, the word HERE, and three hashes.
+
+# -*- Mode: Shell-script -*-
+#
+# etc i3 configuration file
+# etc isn't et cetera, etc is EllaThcat!
+#
+# Pass the result of pressing several keys to i3-config bash $1
+#
+# Enter mode x_h for 3 key presses, result 000 through 999
+# Enter mode x_t0 for 2 key presses, result 000 through 099
+# Enter mode x_u00 for 1 key presses, result 000 through 009
+
+# ================================================================ #
+# Bind 10 keys that correspond to the digits 0-9 (one table only).
+# ================================================================ #
+
+#
+# Table 1 = number keys on top row of main keyboard.
+#
+
+### $key0 0
+### $key1 1
+### $key2 2
+### $key3 3
+### $key4 4
+### $key5 5
+### $key6 6
+### $key7 7
+### $key8 8
+### $key9 9
+
+#
+# Table 2 = numpad overlay onto main keyboard.
+#
+
+# This numpad has 10 keys in roughly the same relative positions as a
+# calculator has digits. The main difference is the shear to the left
+# from the top. The shearing defines a trapezoidal outline rather than
+# a rectangular one.
+
+# The numpad will scramble your brains at first, but repetition will
+# eventually progam your muscle memory.
+set $key7 7
+set $key8 8
+set $key9 9
+
+set $key4 u
+set $key5 i
+set $key6 o
+
+set $key1 j
+set $key2 k
+set $key3 l
+
+set $key0 m
+
+# Keys m,x,w,c are mnemonic, but here we try to reduce the distances
+# (times in millseconds) between keypresses by using keys either side
+# of the table 2 numpad.
+
+set $keyM 6
+set $keyX Y
+set $keyW 0
+set $keyC P
+
+
+# ================================================================ #
+# You shouldn't need to edit anything below here (except mistakes).
+# The mode names are hardcoded, no $, for BMI and quoting reasons.
+# ================================================================ #
+
+mode "x_h" {
+  bindsym $key0 mode x_t0
+  bindsym $key1 mode x_t1
+  bindsym $key2 mode x_t2
+  bindsym $key3 mode x_t3
+  bindsym $key4 mode x_t4
+  bindsym $key5 mode x_t5
+  bindsym $key6 mode x_t6
+  bindsym $key7 mode x_t7
+  bindsym $key8 mode x_t8
+  bindsym $key9 mode x_t9
+  bindsym space mode default
+  bindsym escape mode default
+}
+
+
+# ================================================================ #
+
+mode "x_t0" {
+  bindsym $key0 mode x_u00
+  bindsym $key1 mode x_u01
+  bindsym $key2 mode x_u02
+  bindsym $key3 mode x_u03
+  bindsym $key4 mode x_u04
+  bindsym $key5 mode x_u05
+  bindsym $key6 mode x_u06
+  bindsym $key7 mode x_u07
+  bindsym $key8 mode x_u08
+  bindsym $key9 mode x_u09
+  bindsym space mode default
+  bindsym escape mode default
+}
+
+
+mode "x_t1" {
+  bindsym $key0 mode x_u10
+  bindsym $key1 mode x_u11
+  bindsym $key2 mode x_u12
+  bindsym $key3 mode x_u13
+  bindsym $key4 mode x_u14
+  bindsym $key5 mode x_u15
+  bindsym $key6 mode x_u16
+  bindsym $key7 mode x_u17
+  bindsym $key8 mode x_u18
+  bindsym $key9 mode x_u19
+  bindsym space mode default
+  bindsym escape mode default
+}
+
+
+mode "x_t2" {
+  bindsym $key0 mode x_u20
+  bindsym $key1 mode x_u21
+  bindsym $key2 mode x_u22
+  bindsym $key3 mode x_u23
+  bindsym $key4 mode x_u24
+  bindsym $key5 mode x_u25
+  bindsym $key6 mode x_u26
+  bindsym $key7 mode x_u27
+  bindsym $key8 mode x_u28
+  bindsym $key9 mode x_u29
+  bindsym space mode default
+  bindsym escape mode default
+}
+
+
+mode "x_t3" {
+  bindsym $key0 mode x_u30
+  bindsym $key1 mode x_u31
+  bindsym $key2 mode x_u32
+  bindsym $key3 mode x_u33
+  bindsym $key4 mode x_u34
+  bindsym $key5 mode x_u35
+  bindsym $key6 mode x_u36
+  bindsym $key7 mode x_u37
+  bindsym $key8 mode x_u38
+  bindsym $key9 mode x_u39
+  bindsym space mode default
+  bindsym escape mode default
+}
+
+
+mode "x_t4" {
+  bindsym $key0 mode x_u40
+  bindsym $key1 mode x_u41
+  bindsym $key2 mode x_u42
+  bindsym $key3 mode x_u43
+  bindsym $key4 mode x_u44
+  bindsym $key5 mode x_u45
+  bindsym $key6 mode x_u46
+  bindsym $key7 mode x_u47
+  bindsym $key8 mode x_u48
+  bindsym $key9 mode x_u49
+  bindsym space mode default
+  bindsym escape mode default
+}
+
+
+mode "x_t5" {
+  bindsym $key0 mode x_u50
+  bindsym $key1 mode x_u51
+  bindsym $key2 mode x_u52
+  bindsym $key3 mode x_u53
+  bindsym $key4 mode x_u54
+  bindsym $key5 mode x_u55
+  bindsym $key6 mode x_u56
+  bindsym $key7 mode x_u57
+  bindsym $key8 mode x_u58
+  bindsym $key9 mode x_u59
+  bindsym space mode default
+  bindsym escape mode default
+}
+
+
+mode "x_t6" {
+  bindsym $key0 mode x_u60
+  bindsym $key1 mode x_u61
+  bindsym $key2 mode x_u62
+  bindsym $key3 mode x_u63
+  bindsym $key4 mode x_u64
+  bindsym $key5 mode x_u65
+  bindsym $key6 mode x_u66
+  bindsym $key7 mode x_u67
+  bindsym $key8 mode x_u68
+  bindsym $key9 mode x_u69
+  bindsym space mode default
+  bindsym escape mode default
+}
+
+
+mode "x_t7" {
+  bindsym $key0 mode x_u70
+  bindsym $key1 mode x_u71
+  bindsym $key2 mode x_u72
+  bindsym $key3 mode x_u73
+  bindsym $key4 mode x_u74
+  bindsym $key5 mode x_u75
+  bindsym $key6 mode x_u76
+  bindsym $key7 mode x_u77
+  bindsym $key8 mode x_u78
+  bindsym $key9 mode x_u79
+  bindsym space mode default
+  bindsym escape mode default
+}
+
+
+mode "x_t8" {
+  bindsym $key0 mode x_u80
+  bindsym $key1 mode x_u81
+  bindsym $key2 mode x_u82
+  bindsym $key3 mode x_u83
+  bindsym $key4 mode x_u84
+  bindsym $key5 mode x_u85
+  bindsym $key6 mode x_u86
+  bindsym $key7 mode x_u87
+  bindsym $key8 mode x_u88
+  bindsym $key9 mode x_u89
+  bindsym space mode default
+  bindsym escape mode default
+}
+
+
+mode "x_t9" {
+  bindsym $key0 mode x_u90
+  bindsym $key1 mode x_u91
+  bindsym $key2 mode x_u92
+  bindsym $key3 mode x_u93
+  bindsym $key4 mode x_u94
+  bindsym $key5 mode x_u95
+  bindsym $key6 mode x_u96
+  bindsym $key7 mode x_u97
+  bindsym $key8 mode x_u98
+  bindsym $key9 mode x_u99
+  bindsym space mode default
+  bindsym escape mode default
+}
+
+# ================================================================ #
+
+mode "x_u00" {
+  bindsym $key0 $emit 000
+  bindsym $key1 $emit 001
+  bindsym $key2 $emit 002
+  bindsym $key3 $emit 003
+  bindsym $key4 $emit 004
+  bindsym $key5 $emit 005
+  bindsym $key6 $emit 006
+  bindsym $key7 $emit 007
+  bindsym $key8 $emit 008
+  bindsym $key9 $emit 009
+  bindsym space mode default
+  bindsym escape mode default
+}
+
+mode "x_u01" {
+  bindsym $key0 $emit 010
+  bindsym $key1 $emit 011
+  bindsym $key2 $emit 012
+  bindsym $key3 $emit 013
+  bindsym $key4 $emit 014
+  bindsym $key5 $emit 015
+  bindsym $key6 $emit 016
+  bindsym $key7 $emit 017
+  bindsym $key8 $emit 018
+  bindsym $key9 $emit 019
+  bindsym space mode default
+  bindsym escape mode default
+}
+
+mode "x_u02" {
+  bindsym $key0 $emit 020
+  bindsym $key1 $emit 021
+  bindsym $key2 $emit 022
+  bindsym $key3 $emit 023
+  bindsym $key4 $emit 024
+  bindsym $key5 $emit 025
+  bindsym $key6 $emit 026
+  bindsym $key7 $emit 027
+  bindsym $key8 $emit 028
+  bindsym $key9 $emit 029
+  bindsym space mode default
+  bindsym escape mode default
+}
+
+mode "x_u03" {
+  bindsym $key0 $emit 030
+  bindsym $key1 $emit 031
+  bindsym $key2 $emit 032
+  bindsym $key3 $emit 033
+  bindsym $key4 $emit 034
+  bindsym $key5 $emit 035
+  bindsym $key6 $emit 036
+  bindsym $key7 $emit 037
+  bindsym $key8 $emit 038
+  bindsym $key9 $emit 039
+  bindsym space mode default
+  bindsym escape mode default
+}
+
+mode "x_u04" {
+  bindsym $key0 $emit 040
+  bindsym $key1 $emit 041
+  bindsym $key2 $emit 042
+  bindsym $key3 $emit 043
+  bindsym $key4 $emit 044
+  bindsym $key5 $emit 045
+  bindsym $key6 $emit 046
+  bindsym $key7 $emit 047
+  bindsym $key8 $emit 048
+  bindsym $key9 $emit 049
+  bindsym space mode default
+  bindsym escape mode default
+}
+
+mode "x_u05" {
+  bindsym $key0 $emit 050
+  bindsym $key1 $emit 051
+  bindsym $key2 $emit 052
+  bindsym $key3 $emit 053
+  bindsym $key4 $emit 054
+  bindsym $key5 $emit 055
+  bindsym $key6 $emit 056
+  bindsym $key7 $emit 057
+  bindsym $key8 $emit 058
+  bindsym $key9 $emit 059
+  bindsym space mode default
+  bindsym escape mode default
+}
+
+mode "x_u06" {
+  bindsym $key0 $emit 060
+  bindsym $key1 $emit 061
+  bindsym $key2 $emit 062
+  bindsym $key3 $emit 063
+  bindsym $key4 $emit 064
+  bindsym $key5 $emit 065
+  bindsym $key6 $emit 066
+  bindsym $key7 $emit 067
+  bindsym $key8 $emit 068
+  bindsym $key9 $emit 069
+  bindsym space mode default
+  bindsym escape mode default
+}
+
+mode "x_u07" {
+  bindsym $key0 $emit 070
+  bindsym $key1 $emit 071
+  bindsym $key2 $emit 072
+  bindsym $key3 $emit 073
+  bindsym $key4 $emit 074
+  bindsym $key5 $emit 075
+  bindsym $key6 $emit 076
+  bindsym $key7 $emit 077
+  bindsym $key8 $emit 078
+  bindsym $key9 $emit 079
+  bindsym space mode default
+  bindsym escape mode default
+}
+
+mode "x_u08" {
+  bindsym $key0 $emit 080
+  bindsym $key1 $emit 081
+  bindsym $key2 $emit 082
+  bindsym $key3 $emit 083
+  bindsym $key4 $emit 084
+  bindsym $key5 $emit 085
+  bindsym $key6 $emit 086
+  bindsym $key7 $emit 087
+  bindsym $key8 $emit 088
+  bindsym $key9 $emit 089
+  bindsym space mode default
+  bindsym escape mode default
+}
+
+mode "x_u09" {
+  bindsym $key0 $emit 090
+  bindsym $key1 $emit 091
+  bindsym $key2 $emit 092
+  bindsym $key3 $emit 093
+  bindsym $key4 $emit 094
+  bindsym $key5 $emit 095
+  bindsym $key6 $emit 096
+  bindsym $key7 $emit 097
+  bindsym $key8 $emit 098
+  bindsym $key9 $emit 099
+  bindsym space mode default
+  bindsym escape mode default
+}
+
+# ================================================================ #
+
+mode "x_u10" {
+  bindsym $key0 $emit 100
+  bindsym $key1 $emit 101
+  bindsym $key2 $emit 102
+  bindsym $key3 $emit 103
+  bindsym $key4 $emit 104
+  bindsym $key5 $emit 105
+  bindsym $key6 $emit 106
+  bindsym $key7 $emit 107
+  bindsym $key8 $emit 108
+  bindsym $key9 $emit 109
+  bindsym space mode default
+  bindsym escape mode default
+}
+
+mode "x_u11" {
+  bindsym $key0 $emit 010
+  bindsym $key1 $emit 111
+  bindsym $key2 $emit 112
+  bindsym $key3 $emit 113
+  bindsym $key4 $emit 114
+  bindsym $key5 $emit 115
+  bindsym $key6 $emit 116
+  bindsym $key7 $emit 117
+  bindsym $key8 $emit 118
+  bindsym $key9 $emit 119
+  bindsym space mode default
+  bindsym escape mode default
+}
+
+mode "x_u12" {
+  bindsym $key0 $emit 120
+  bindsym $key1 $emit 121
+  bindsym $key2 $emit 122
+  bindsym $key3 $emit 123
+  bindsym $key4 $emit 124
+  bindsym $key5 $emit 125
+  bindsym $key6 $emit 126
+  bindsym $key7 $emit 127
+  bindsym $key8 $emit 128
+  bindsym $key9 $emit 129
+  bindsym space mode default
+  bindsym escape mode default
+}
+
+mode "x_u13" {
+  bindsym $key0 $emit 130
+  bindsym $key1 $emit 131
+  bindsym $key2 $emit 132
+  bindsym $key3 $emit 133
+  bindsym $key4 $emit 134
+  bindsym $key5 $emit 135
+  bindsym $key6 $emit 136
+  bindsym $key7 $emit 137
+  bindsym $key8 $emit 138
+  bindsym $key9 $emit 139
+  bindsym space mode default
+  bindsym escape mode default
+}
+
+mode "x_u14" {
+  bindsym $key0 $emit 140
+
+  bindsym $key1 $emit 141
+  bindsym $key2 $emit 142
+  bindsym $key3 $emit 143
+  bindsym $key4 $emit 144
+  bindsym $key5 $emit 145
+  bindsym $key6 $emit 146
+  bindsym $key7 $emit 147
+  bindsym $key8 $emit 148
+  bindsym $key9 $emit 149
+  bindsym space mode default
+  bindsym escape mode default
+}
+
+mode "x_u15" {
+  bindsym $key0 $emit 150
+  bindsym $key1 $emit 151
+  bindsym $key2 $emit 152
+  bindsym $key3 $emit 153
+  bindsym $key4 $emit 154
+  bindsym $key5 $emit 155
+  bindsym $key6 $emit 156
+  bindsym $key7 $emit 157
+  bindsym $key8 $emit 158
+  bindsym $key9 $emit 159
+  bindsym space mode default
+  bindsym escape mode default
+}
+
+mode "x_u16" {
+  bindsym $key0 $emit 160
+  bindsym $key1 $emit 161
+  bindsym $key2 $emit 162
+  bindsym $key3 $emit 163
+  bindsym $key4 $emit 164
+  bindsym $key5 $emit 165
+  bindsym $key6 $emit 166
+  bindsym $key7 $emit 167
+  bindsym $key8 $emit 168
+  bindsym $key9 $emit 169
+  bindsym space mode default
+  bindsym escape mode default
+}
+
+mode "x_u17" {
+  bindsym $key0 $emit 170
+  bindsym $key1 $emit 171
+  bindsym $key2 $emit 172
+  bindsym $key3 $emit 173
+  bindsym $key4 $emit 174
+  bindsym $key5 $emit 175
+  bindsym $key6 $emit 176
+  bindsym $key7 $emit 177
+  bindsym $key8 $emit 178
+  bindsym $key9 $emit 179
+  bindsym space mode default
+  bindsym escape mode default
+}
+
+mode "x_u18" {
+  bindsym $key0 $emit 180
+  bindsym $key1 $emit 181
+  bindsym $key2 $emit 182
+  bindsym $key3 $emit 183
+  bindsym $key4 $emit 184
+  bindsym $key5 $emit 185
+  bindsym $key6 $emit 186
+  bindsym $key7 $emit 187
+  bindsym $key8 $emit 188
+  bindsym $key9 $emit 189
+  bindsym space mode default
+  bindsym escape mode default
+}
+
+mode "x_u19" {
+  bindsym $key0 $emit 190
+  bindsym $key1 $emit 191
+  bindsym $key2 $emit 192
+  bindsym $key3 $emit 193
+  bindsym $key4 $emit 194
+  bindsym $key5 $emit 195
+  bindsym $key6 $emit 196
+  bindsym $key7 $emit 197
+  bindsym $key8 $emit 198
+  bindsym $key9 $emit 199
+  bindsym space mode default
+  bindsym escape mode default
+}
+
+# ================================================================ #
+
+mode "x_u20" {
+  bindsym $key0 $emit 200
+  bindsym $key1 $emit 201
+  bindsym $key2 $emit 202
+  bindsym $key3 $emit 203
+  bindsym $key4 $emit 204
+  bindsym $key5 $emit 205
+  bindsym $key6 $emit 206
+  bindsym $key7 $emit 207
+  bindsym $key8 $emit 208
+  bindsym $key9 $emit 209
+  bindsym space mode default
+  bindsym escape mode default
+}
+
+mode "x_u21" {
+  bindsym $key0 $emit 210
+  bindsym $key1 $emit 211
+  bindsym $key2 $emit 212
+  bindsym $key3 $emit 213
+  bindsym $key4 $emit 214
+  bindsym $key5 $emit 215
+  bindsym $key6 $emit 216
+  bindsym $key7 $emit 217
+  bindsym $key8 $emit 218
+  bindsym $key9 $emit 219
+  bindsym space mode default
+  bindsym escape mode default
+}
+
+mode "x_u22" {
+  bindsym $key0 $emit 220
+  bindsym $key1 $emit 221
+  bindsym $key2 $emit 222
+  bindsym $key3 $emit 223
+  bindsym $key4 $emit 224
+  bindsym $key5 $emit 225
+  bindsym $key6 $emit 226
+  bindsym $key7 $emit 227
+  bindsym $key8 $emit 228
+  bindsym $key9 $emit 229
+  bindsym space mode default
+  bindsym escape mode default
+}
+
+mode "x_u23" {
+  bindsym $key0 $emit 230
+  bindsym $key1 $emit 231
+  bindsym $key2 $emit 232
+  bindsym $key3 $emit 233
+  bindsym $key4 $emit 234
+  bindsym $key5 $emit 235
+  bindsym $key6 $emit 236
+  bindsym $key7 $emit 237
+  bindsym $key8 $emit 238
+  bindsym $key9 $emit 239
+  bindsym space mode default
+  bindsym escape mode default
+}
+
+mode "x_u24" {
+  bindsym $key0 $emit 240
+  bindsym $key1 $emit 241
+  bindsym $key2 $emit 242
+  bindsym $key3 $emit 243
+  bindsym $key4 $emit 244
+  bindsym $key5 $emit 245
+  bindsym $key6 $emit 246
+  bindsym $key7 $emit 247
+  bindsym $key8 $emit 248
+  bindsym $key9 $emit 249
+  bindsym space mode default
+  bindsym escape mode default
+}
+
+mode "x_u25" {
+  bindsym $key0 $emit 250
+  bindsym $key1 $emit 251
+  bindsym $key2 $emit 252
+  bindsym $key3 $emit 253
+  bindsym $key4 $emit 254
+  bindsym $key5 $emit 255
+  bindsym $key6 $emit 256
+  bindsym $key7 $emit 257
+  bindsym $key8 $emit 258
+  bindsym $key9 $emit 259
+  bindsym space mode default
+  bindsym escape mode default
+}
+
+mode "x_u26" {
+  bindsym $key0 $emit 260
+  bindsym $key1 $emit 261
+  bindsym $key2 $emit 262
+  bindsym $key3 $emit 263
+  bindsym $key4 $emit 264
+  bindsym $key5 $emit 265
+  bindsym $key6 $emit 266
+  bindsym $key7 $emit 267
+  bindsym $key8 $emit 268
+  bindsym $key9 $emit 269
+  bindsym space mode default
+  bindsym escape mode default
+}
+
+mode "x_u27" {
+  bindsym $key0 $emit 270
+  bindsym $key1 $emit 271
+  bindsym $key2 $emit 272
+  bindsym $key3 $emit 273
+  bindsym $key4 $emit 274
+  bindsym $key5 $emit 275
+  bindsym $key6 $emit 276
+  bindsym $key7 $emit 277
+  bindsym $key8 $emit 278
+  bindsym $key9 $emit 279
+  bindsym space mode default
+  bindsym escape mode default
+}
+
+mode "x_u28" {
+  bindsym $key0 $emit 280
+  bindsym $key1 $emit 281
+  bindsym $key2 $emit 282
+  bindsym $key3 $emit 283
+  bindsym $key4 $emit 284
+  bindsym $key5 $emit 285
+  bindsym $key6 $emit 286
+  bindsym $key7 $emit 287
+  bindsym $key8 $emit 288
+  bindsym $key9 $emit 289
+  bindsym space mode default
+  bindsym escape mode default
+}
+
+mode "x_u29" {
+  bindsym $key0 $emit 290
+  bindsym $key1 $emit 291
+  bindsym $key2 $emit 292
+  bindsym $key3 $emit 293
+  bindsym $key4 $emit 294
+  bindsym $key5 $emit 295
+  bindsym $key6 $emit 296
+  bindsym $key7 $emit 297
+  bindsym $key8 $emit 298
+  bindsym $key9 $emit 299
+  bindsym space mode default
+  bindsym escape mode default
+}
+
+# ================================================================ #
+
+mode "x_u30" {
+  bindsym $key0 $emit 300
+  bindsym $key1 $emit 301
+  bindsym $key2 $emit 302
+  bindsym $key3 $emit 303
+  bindsym $key4 $emit 304
+  bindsym $key5 $emit 305
+  bindsym $key6 $emit 306
+  bindsym $key7 $emit 307
+  bindsym $key8 $emit 308
+  bindsym $key9 $emit 309
+  bindsym space mode default
+  bindsym escape mode default
+}
+
+mode "x_u31" {
+  bindsym $key0 $emit 310
+  bindsym $key1 $emit 311
+  bindsym $key2 $emit 312
+  bindsym $key3 $emit 313
+  bindsym $key4 $emit 314
+  bindsym $key5 $emit 315
+  bindsym $key6 $emit 316
+  bindsym $key7 $emit 317
+  bindsym $key8 $emit 318
+  bindsym $key9 $emit 319
+  bindsym space mode default
+  bindsym escape mode default
+}
+
+mode "x_u32" {
+  bindsym $key0 $emit 320
+  bindsym $key1 $emit 321
+  bindsym $key2 $emit 322
+  bindsym $key3 $emit 323
+  bindsym $key4 $emit 324
+  bindsym $key5 $emit 325
+  bindsym $key6 $emit 326
+  bindsym $key7 $emit 327
+  bindsym $key8 $emit 328
+  bindsym $key9 $emit 329
+  bindsym space mode default
+  bindsym escape mode default
+}
+
+mode "x_u33" {
+  bindsym $key0 $emit 330
+  bindsym $key1 $emit 331
+  bindsym $key2 $emit 332
+  bindsym $key3 $emit 333
+  bindsym $key4 $emit 334
+  bindsym $key5 $emit 335
+  bindsym $key6 $emit 336
+  bindsym $key7 $emit 337
+  bindsym $key8 $emit 338
+  bindsym $key9 $emit 339
+  bindsym space mode default
+  bindsym escape mode default
+}
+
+mode "x_u34" {
+  bindsym $key0 $emit 340
+  bindsym $key1 $emit 341
+  bindsym $key2 $emit 342
+  bindsym $key3 $emit 343
+  bindsym $key4 $emit 344
+  bindsym $key5 $emit 345
+  bindsym $key6 $emit 346
+  bindsym $key7 $emit 347
+  bindsym $key8 $emit 348
+  bindsym $key9 $emit 349
+  bindsym space mode default
+  bindsym escape mode default
+}
+
+mode "x_u35" {
+  bindsym $key0 $emit 350
+  bindsym $key1 $emit 351
+  bindsym $key2 $emit 352
+  bindsym $key3 $emit 353
+  bindsym $key4 $emit 354
+  bindsym $key5 $emit 355
+  bindsym $key6 $emit 356
+  bindsym $key7 $emit 357
+  bindsym $key8 $emit 358
+  bindsym $key9 $emit 359
+  bindsym space mode default
+  bindsym escape mode default
+}
+
+mode "x_u36" {
+  bindsym $key0 $emit 360
+  bindsym $key1 $emit 361
+  bindsym $key2 $emit 362
+  bindsym $key3 $emit 363
+  bindsym $key4 $emit 364
+  bindsym $key5 $emit 365
+  bindsym $key6 $emit 366
+  bindsym $key7 $emit 367
+  bindsym $key8 $emit 368
+  bindsym $key9 $emit 369
+  bindsym space mode default
+  bindsym escape mode default
+}
+
+mode "x_u37" {
+  bindsym $key0 $emit 370
+  bindsym $key1 $emit 371
+  bindsym $key2 $emit 372
+  bindsym $key3 $emit 373
+  bindsym $key4 $emit 374
+  bindsym $key5 $emit 375
+  bindsym $key6 $emit 376
+  bindsym $key7 $emit 377
+  bindsym $key8 $emit 378
+  bindsym $key9 $emit 379
+  bindsym space mode default
+  bindsym escape mode default
+}
+
+mode "x_u38" {
+  bindsym $key0 $emit 380
+  bindsym $key1 $emit 381
+  bindsym $key2 $emit 382
+  bindsym $key3 $emit 383
+  bindsym $key4 $emit 384
+  bindsym $key5 $emit 385
+  bindsym $key6 $emit 386
+  bindsym $key7 $emit 387
+  bindsym $key8 $emit 388
+  bindsym $key9 $emit 389
+  bindsym space mode default
+  bindsym escape mode default
+}
+
+mode "x_u39" {
+  bindsym $key0 $emit 390
+  bindsym $key1 $emit 391
+  bindsym $key2 $emit 392
+  bindsym $key3 $emit 393
+  bindsym $key4 $emit 394
+  bindsym $key5 $emit 395
+  bindsym $key6 $emit 396
+  bindsym $key7 $emit 397
+  bindsym $key8 $emit 398
+  bindsym $key9 $emit 399
+  bindsym space mode default
+  bindsym escape mode default
+}
+
+# ================================================================ #
+
+mode "x_u40" {
+  bindsym $key0 $emit 400
+  bindsym $key1 $emit 401
+  bindsym $key2 $emit 402
+  bindsym $key3 $emit 403
+  bindsym $key4 $emit 404
+  bindsym $key5 $emit 405
+  bindsym $key6 $emit 406
+  bindsym $key7 $emit 407
+  bindsym $key8 $emit 408
+  bindsym $key9 $emit 409
+  bindsym space mode default
+  bindsym escape mode default
+}
+
+mode "x_u41" {
+  bindsym $key0 $emit 410
+  bindsym $key1 $emit 411
+  bindsym $key2 $emit 412
+  bindsym $key3 $emit 413
+  bindsym $key4 $emit 414
+  bindsym $key5 $emit 415
+  bindsym $key6 $emit 416
+  bindsym $key7 $emit 417
+  bindsym $key8 $emit 418
+  bindsym $key9 $emit 419
+  bindsym space mode default
+  bindsym escape mode default
+}
+
+mode "x_u42" {
+  bindsym $key0 $emit 420
+  bindsym $key1 $emit 421
+  bindsym $key2 $emit 422
+  bindsym $key3 $emit 423
+  bindsym $key4 $emit 424
+  bindsym $key5 $emit 425
+  bindsym $key6 $emit 426
+  bindsym $key7 $emit 427
+  bindsym $key8 $emit 428
+  bindsym $key9 $emit 429
+  bindsym space mode default
+  bindsym escape mode default
+}
+
+mode "x_u43" {
+  bindsym $key0 $emit 430
+  bindsym $key1 $emit 431
+  bindsym $key2 $emit 432
+  bindsym $key3 $emit 433
+  bindsym $key4 $emit 434
+  bindsym $key5 $emit 435
+  bindsym $key6 $emit 436
+  bindsym $key7 $emit 437
+  bindsym $key8 $emit 438
+  bindsym $key9 $emit 439
+  bindsym space mode default
+  bindsym escape mode default
+}
+
+mode "x_u44" {
+  bindsym $key0 $emit 440
+  bindsym $key1 $emit 441
+  bindsym $key2 $emit 442
+  bindsym $key3 $emit 443
+  bindsym $key4 $emit 444
+  bindsym $key5 $emit 445
+  bindsym $key6 $emit 446
+  bindsym $key7 $emit 447
+  bindsym $key8 $emit 448
+  bindsym $key9 $emit 449
+  bindsym space mode default
+  bindsym escape mode default
+}
+
+mode "x_u45" {
+  bindsym $key0 $emit 450
+  bindsym $key1 $emit 451
+  bindsym $key2 $emit 452
+  bindsym $key3 $emit 453
+  bindsym $key4 $emit 454
+  bindsym $key5 $emit 455
+  bindsym $key6 $emit 456
+  bindsym $key7 $emit 457
+  bindsym $key8 $emit 458
+  bindsym $key9 $emit 459
+  bindsym space mode default
+  bindsym escape mode default
+}
+
+mode "x_u46" {
+  bindsym $key0 $emit 460
+  bindsym $key1 $emit 461
+  bindsym $key2 $emit 462
+  bindsym $key3 $emit 463
+  bindsym $key4 $emit 464
+  bindsym $key5 $emit 465
+  bindsym $key6 $emit 466
+  bindsym $key7 $emit 467
+  bindsym $key8 $emit 468
+  bindsym $key9 $emit 469
+  bindsym space mode default
+  bindsym escape mode default
+}
+
+mode "x_u47" {
+  bindsym $key0 $emit 470
+  bindsym $key1 $emit 471
+  bindsym $key2 $emit 472
+  bindsym $key3 $emit 473
+  bindsym $key4 $emit 474
+  bindsym $key5 $emit 475
+  bindsym $key6 $emit 476
+  bindsym $key7 $emit 477
+  bindsym $key8 $emit 478
+  bindsym $key9 $emit 479
+  bindsym space mode default
+  bindsym escape mode default
+}
+
+mode "x_u48" {
+  bindsym $key0 $emit 480
+  bindsym $key1 $emit 481
+  bindsym $key2 $emit 482
+  bindsym $key3 $emit 483
+  bindsym $key4 $emit 484
+  bindsym $key5 $emit 485
+  bindsym $key6 $emit 486
+  bindsym $key7 $emit 487
+  bindsym $key8 $emit 488
+  bindsym $key9 $emit 489
+  bindsym space mode default
+  bindsym escape mode default
+}
+
+mode "x_u49" {
+  bindsym $key0 $emit 490
+  bindsym $key1 $emit 491
+  bindsym $key2 $emit 492
+  bindsym $key3 $emit 493
+  bindsym $key4 $emit 494
+  bindsym $key5 $emit 495
+  bindsym $key6 $emit 496
+  bindsym $key7 $emit 497
+  bindsym $key8 $emit 498
+  bindsym $key9 $emit 499
+  bindsym space mode default
+  bindsym escape mode default
+}
+
+# ================================================================ #
+
+mode "x_u50" {
+  bindsym $key0 $emit 500
+  bindsym $key1 $emit 501
+  bindsym $key2 $emit 502
+  bindsym $key3 $emit 503
+  bindsym $key4 $emit 504
+  bindsym $key5 $emit 505
+  bindsym $key6 $emit 506
+  bindsym $key7 $emit 507
+  bindsym $key8 $emit 508
+  bindsym $key9 $emit 509
+  bindsym space mode default
+  bindsym escape mode default
+}
+
+mode "x_u51" {
+  bindsym $key0 $emit 510
+  bindsym $key1 $emit 511
+  bindsym $key2 $emit 512
+  bindsym $key3 $emit 513
+  bindsym $key4 $emit 514
+  bindsym $key5 $emit 515
+  bindsym $key6 $emit 516
+  bindsym $key7 $emit 517
+  bindsym $key8 $emit 518
+  bindsym $key9 $emit 519
+  bindsym space mode default
+  bindsym escape mode default
+}
+
+mode "x_u52" {
+  bindsym $key0 $emit 520
+  bindsym $key1 $emit 521
+  bindsym $key2 $emit 522
+  bindsym $key3 $emit 523
+  bindsym $key4 $emit 524
+  bindsym $key5 $emit 525
+  bindsym $key6 $emit 526
+  bindsym $key7 $emit 527
+  bindsym $key8 $emit 528
+  bindsym $key9 $emit 529
+  bindsym space mode default
+  bindsym escape mode default
+}
+
+mode "x_u53" {
+  bindsym $key0 $emit 530
+  bindsym $key1 $emit 531
+  bindsym $key2 $emit 532
+  bindsym $key3 $emit 533
+  bindsym $key4 $emit 534
+  bindsym $key5 $emit 535
+  bindsym $key6 $emit 536
+  bindsym $key7 $emit 537
+  bindsym $key8 $emit 538
+  bindsym $key9 $emit 539
+  bindsym space mode default
+  bindsym escape mode default
+}
+
+mode "x_u54" {
+  bindsym $key0 $emit 540
+  bindsym $key1 $emit 541
+  bindsym $key2 $emit 542
+  bindsym $key3 $emit 543
+  bindsym $key4 $emit 544
+  bindsym $key5 $emit 545
+  bindsym $key6 $emit 546
+  bindsym $key7 $emit 547
+  bindsym $key8 $emit 548
+  bindsym $key9 $emit 549
+  bindsym space mode default
+  bindsym escape mode default
+}
+
+mode "x_u55" {
+  bindsym $key0 $emit 550
+  bindsym $key1 $emit 551
+  bindsym $key2 $emit 552
+  bindsym $key3 $emit 553
+  bindsym $key4 $emit 554
+  bindsym $key5 $emit 555
+  bindsym $key6 $emit 556
+  bindsym $key7 $emit 557
+  bindsym $key8 $emit 558
+  bindsym $key9 $emit 559
+  bindsym space mode default
+  bindsym escape mode default
+}
+
+mode "x_u56" {
+  bindsym $key0 $emit 560
+  bindsym $key1 $emit 561
+  bindsym $key2 $emit 562
+  bindsym $key3 $emit 563
+  bindsym $key4 $emit 564
+  bindsym $key5 $emit 565
+  bindsym $key6 $emit 566
+  bindsym $key7 $emit 567
+  bindsym $key8 $emit 568
+  bindsym $key9 $emit 569
+  bindsym space mode default
+  bindsym escape mode default
+}
+
+mode "x_u57" {
+  bindsym $key0 $emit 570
+  bindsym $key1 $emit 571
+  bindsym $key2 $emit 572
+  bindsym $key3 $emit 573
+  bindsym $key4 $emit 574
+  bindsym $key5 $emit 575
+  bindsym $key6 $emit 576
+  bindsym $key7 $emit 577
+  bindsym $key8 $emit 578
+  bindsym $key9 $emit 579
+  bindsym space mode default
+  bindsym escape mode default
+}
+
+mode "x_u58" {
+  bindsym $key0 $emit 580
+  bindsym $key1 $emit 581
+  bindsym $key2 $emit 582
+  bindsym $key3 $emit 583
+  bindsym $key4 $emit 584
+  bindsym $key5 $emit 585
+  bindsym $key6 $emit 586
+  bindsym $key7 $emit 587
+  bindsym $key8 $emit 588
+  bindsym $key9 $emit 589
+  bindsym space mode default
+  bindsym escape mode default
+}
+
+mode "x_u59" {
+  bindsym $key0 $emit 590
+  bindsym $key1 $emit 591
+  bindsym $key2 $emit 592
+  bindsym $key3 $emit 593
+  bindsym $key4 $emit 594
+  bindsym $key5 $emit 595
+  bindsym $key6 $emit 596
+  bindsym $key7 $emit 597
+  bindsym $key8 $emit 598
+  bindsym $key9 $emit 599
+  bindsym space mode default
+  bindsym escape mode default
+}
+
+# ================================================================ #
+
+mode "x_u60" {
+  bindsym $key0 $emit 600
+  bindsym $key1 $emit 601
+  bindsym $key2 $emit 602
+  bindsym $key3 $emit 603
+  bindsym $key4 $emit 604
+  bindsym $key5 $emit 605
+  bindsym $key6 $emit 606
+  bindsym $key7 $emit 607
+  bindsym $key8 $emit 608
+  bindsym $key9 $emit 609
+  bindsym space mode default
+  bindsym escape mode default
+}
+
+mode "x_u61" {
+  bindsym $key0 $emit 610
+  bindsym $key1 $emit 611
+  bindsym $key2 $emit 612
+  bindsym $key3 $emit 613
+  bindsym $key4 $emit 614
+  bindsym $key5 $emit 615
+  bindsym $key6 $emit 616
+  bindsym $key7 $emit 617
+  bindsym $key8 $emit 618
+  bindsym $key9 $emit 619
+  bindsym space mode default
+  bindsym escape mode default
+}
+
+mode "x_u62" {
+  bindsym $key0 $emit 620
+  bindsym $key1 $emit 621
+  bindsym $key2 $emit 622
+  bindsym $key3 $emit 623
+  bindsym $key4 $emit 624
+  bindsym $key5 $emit 625
+  bindsym $key6 $emit 626
+  bindsym $key7 $emit 627
+  bindsym $key8 $emit 628
+  bindsym $key9 $emit 629
+  bindsym space mode default
+  bindsym escape mode default
+}
+
+mode "x_u63" {
+  bindsym $key0 $emit 630
+  bindsym $key1 $emit 631
+  bindsym $key2 $emit 632
+  bindsym $key3 $emit 633
+  bindsym $key4 $emit 634
+  bindsym $key5 $emit 635
+  bindsym $key6 $emit 636
+  bindsym $key7 $emit 637
+  bindsym $key8 $emit 638
+  bindsym $key9 $emit 639
+  bindsym space mode default
+  bindsym escape mode default
+}
+
+mode "x_u64" {
+  bindsym $key0 $emit 640
+  bindsym $key1 $emit 641
+  bindsym $key2 $emit 642
+  bindsym $key3 $emit 643
+  bindsym $key4 $emit 644
+  bindsym $key5 $emit 645
+  bindsym $key6 $emit 646
+  bindsym $key7 $emit 647
+  bindsym $key8 $emit 648
+  bindsym $key9 $emit 649
+  bindsym space mode default
+  bindsym escape mode default
+}
+
+mode "x_u65" {
+  bindsym $key0 $emit 650
+  bindsym $key1 $emit 651
+  bindsym $key2 $emit 652
+  bindsym $key3 $emit 653
+  bindsym $key4 $emit 654
+  bindsym $key5 $emit 655
+  bindsym $key6 $emit 656
+  bindsym $key7 $emit 657
+  bindsym $key8 $emit 658
+  bindsym $key9 $emit 659
+  bindsym space mode default
+  bindsym escape mode default
+}
+
+mode "x_u66" {
+  bindsym $key0 $emit 660
+  bindsym $key1 $emit 661
+  bindsym $key2 $emit 662
+  bindsym $key3 $emit 663
+  bindsym $key4 $emit 664
+  bindsym $key5 $emit 665
+  bindsym $key6 $emit 666
+  bindsym $key7 $emit 667
+  bindsym $key8 $emit 668
+  bindsym $key9 $emit 669
+  bindsym space mode default
+  bindsym escape mode default
+}
+
+mode "x_u67" {
+  bindsym $key0 $emit 670
+  bindsym $key1 $emit 671
+  bindsym $key2 $emit 672
+  bindsym $key3 $emit 673
+  bindsym $key4 $emit 674
+  bindsym $key5 $emit 675
+  bindsym $key6 $emit 676
+  bindsym $key7 $emit 677
+  bindsym $key8 $emit 678
+  bindsym $key9 $emit 679
+  bindsym space mode default
+  bindsym escape mode default
+}
+
+mode "x_u68" {
+  bindsym $key0 $emit 680
+  bindsym $key1 $emit 681
+  bindsym $key2 $emit 682
+  bindsym $key3 $emit 683
+  bindsym $key4 $emit 684
+  bindsym $key5 $emit 685
+  bindsym $key6 $emit 686
+  bindsym $key7 $emit 687
+  bindsym $key8 $emit 688
+  bindsym $key9 $emit 689
+  bindsym space mode default
+  bindsym escape mode default
+}
+
+mode "x_u69" {
+  bindsym $key0 $emit 690
+  bindsym $key1 $emit 691
+  bindsym $key2 $emit 692
+  bindsym $key3 $emit 693
+  bindsym $key4 $emit 694
+  bindsym $key5 $emit 695
+  bindsym $key6 $emit 696
+  bindsym $key7 $emit 697
+  bindsym $key8 $emit 698
+  bindsym $key9 $emit 699
+  bindsym space mode default
+  bindsym escape mode default
+}
+
+# ================================================================ #
+
+mode "x_u70" {
+  bindsym $key0 $emit 700
+  bindsym $key1 $emit 701
+  bindsym $key2 $emit 702
+  bindsym $key3 $emit 703
+  bindsym $key4 $emit 704
+  bindsym $key5 $emit 705
+  bindsym $key6 $emit 706
+  bindsym $key7 $emit 707
+  bindsym $key8 $emit 708
+  bindsym $key9 $emit 709
+  bindsym space mode default
+  bindsym escape mode default
+}
+
+mode "x_u71" {
+  bindsym $key0 $emit 710
+  bindsym $key1 $emit 711
+  bindsym $key2 $emit 712
+  bindsym $key3 $emit 713
+  bindsym $key4 $emit 714
+  bindsym $key5 $emit 715
+  bindsym $key6 $emit 716
+  bindsym $key7 $emit 717
+  bindsym $key8 $emit 718
+  bindsym $key9 $emit 719
+  bindsym space mode default
+  bindsym escape mode default
+}
+
+mode "x_u72" {
+  bindsym $key0 $emit 720
+  bindsym $key1 $emit 721
+  bindsym $key2 $emit 722
+  bindsym $key3 $emit 723
+  bindsym $key4 $emit 724
+  bindsym $key5 $emit 725
+  bindsym $key6 $emit 726
+  bindsym $key7 $emit 727
+  bindsym $key8 $emit 728
+  bindsym $key9 $emit 729
+  bindsym space mode default
+  bindsym escape mode default
+}
+
+mode "x_u73" {
+  bindsym $key0 $emit 730
+  bindsym $key1 $emit 731
+  bindsym $key2 $emit 732
+  bindsym $key3 $emit 733
+  bindsym $key4 $emit 734
+  bindsym $key5 $emit 735
+  bindsym $key6 $emit 736
+  bindsym $key7 $emit 737
+  bindsym $key8 $emit 738
+  bindsym $key9 $emit 739
+  bindsym space mode default
+  bindsym escape mode default
+}
+
+mode "x_u74" {
+  bindsym $key0 $emit 740
+  bindsym $key1 $emit 741
+  bindsym $key2 $emit 742
+  bindsym $key3 $emit 743
+  bindsym $key4 $emit 744
+  bindsym $key5 $emit 745
+  bindsym $key6 $emit 746
+  bindsym $key7 $emit 747
+  bindsym $key8 $emit 748
+  bindsym $key9 $emit 749
+  bindsym space mode default
+  bindsym escape mode default
+}
+
+mode "x_u75" {
+  bindsym $key0 $emit 750
+  bindsym $key1 $emit 751
+  bindsym $key2 $emit 752
+  bindsym $key3 $emit 753
+  bindsym $key4 $emit 754
+  bindsym $key5 $emit 755
+  bindsym $key6 $emit 756
+  bindsym $key7 $emit 757
+  bindsym $key8 $emit 758
+  bindsym $key9 $emit 759
+  bindsym space mode default
+  bindsym escape mode default
+}
+
+mode "x_u76" {
+  bindsym $key0 $emit 760
+  bindsym $key1 $emit 761
+  bindsym $key2 $emit 762
+  bindsym $key3 $emit 763
+  bindsym $key4 $emit 764
+  bindsym $key5 $emit 765
+  bindsym $key6 $emit 766
+  bindsym $key7 $emit 767
+  bindsym $key8 $emit 768
+  bindsym $key9 $emit 769
+  bindsym space mode default
+  bindsym escape mode default
+}
+
+mode "x_u77" {
+  bindsym $key0 $emit 770
+  bindsym $key1 $emit 771
+  bindsym $key2 $emit 772
+  bindsym $key3 $emit 773
+  bindsym $key4 $emit 774
+  bindsym $key5 $emit 775
+  bindsym $key6 $emit 776
+  bindsym $key7 $emit 777
+  bindsym $key8 $emit 778
+  bindsym $key9 $emit 779
+  bindsym space mode default
+  bindsym escape mode default
+}
+
+mode "x_u78" {
+  bindsym $key0 $emit 780
+  bindsym $key1 $emit 781
+  bindsym $key2 $emit 782
+  bindsym $key3 $emit 783
+  bindsym $key4 $emit 784
+  bindsym $key5 $emit 785
+  bindsym $key6 $emit 786
+  bindsym $key7 $emit 787
+  bindsym $key8 $emit 788
+  bindsym $key9 $emit 789
+  bindsym space mode default
+  bindsym escape mode default
+}
+
+mode "x_u79" {
+  bindsym $key0 $emit 790
+  bindsym $key1 $emit 791
+  bindsym $key2 $emit 792
+  bindsym $key3 $emit 793
+  bindsym $key4 $emit 794
+  bindsym $key5 $emit 795
+  bindsym $key6 $emit 796
+  bindsym $key7 $emit 797
+  bindsym $key8 $emit 798
+  bindsym $key9 $emit 799
+  bindsym space mode default
+  bindsym escape mode default
+}
+
+# ================================================================ #
+
+mode "x_u80" {
+  bindsym $key0 $emit 800
+  bindsym $key1 $emit 801
+  bindsym $key2 $emit 802
+  bindsym $key3 $emit 803
+  bindsym $key4 $emit 804
+  bindsym $key5 $emit 805
+  bindsym $key6 $emit 806
+  bindsym $key7 $emit 807
+  bindsym $key8 $emit 808
+  bindsym $key9 $emit 809
+  bindsym space mode default
+  bindsym escape mode default
+}
+
+mode "x_u81" {
+  bindsym $key0 $emit 810
+  bindsym $key1 $emit 811
+  bindsym $key2 $emit 812
+  bindsym $key3 $emit 813
+  bindsym $key4 $emit 814
+  bindsym $key5 $emit 815
+  bindsym $key6 $emit 816
+  bindsym $key7 $emit 817
+  bindsym $key8 $emit 818
+  bindsym $key9 $emit 819
+  bindsym space mode default
+  bindsym escape mode default
+}
+
+mode "x_u82" {
+  bindsym $key0 $emit 820
+  bindsym $key1 $emit 821
+  bindsym $key2 $emit 822
+  bindsym $key3 $emit 823
+  bindsym $key4 $emit 824
+  bindsym $key5 $emit 825
+  bindsym $key6 $emit 826
+  bindsym $key7 $emit 827
+  bindsym $key8 $emit 828
+  bindsym $key9 $emit 829
+  bindsym space mode default
+  bindsym escape mode default
+}
+
+mode "x_u83" {
+  bindsym $key0 $emit 830
+  bindsym $key1 $emit 831
+  bindsym $key2 $emit 832
+  bindsym $key3 $emit 833
+  bindsym $key4 $emit 834
+  bindsym $key5 $emit 835
+  bindsym $key6 $emit 836
+  bindsym $key7 $emit 837
+  bindsym $key8 $emit 838
+  bindsym $key9 $emit 839
+  bindsym space mode default
+  bindsym escape mode default
+}
+
+mode "x_u84" {
+  bindsym $key0 $emit 840
+  bindsym $key1 $emit 841
+  bindsym $key2 $emit 842
+  bindsym $key3 $emit 843
+  bindsym $key4 $emit 844
+  bindsym $key5 $emit 845
+  bindsym $key6 $emit 846
+  bindsym $key7 $emit 847
+  bindsym $key8 $emit 848
+  bindsym $key9 $emit 849
+  bindsym space mode default
+  bindsym escape mode default
+}
+
+mode "x_u85" {
+  bindsym $key0 $emit 850
+  bindsym $key1 $emit 851
+  bindsym $key2 $emit 852
+  bindsym $key3 $emit 853
+  bindsym $key4 $emit 854
+  bindsym $key5 $emit 855
+  bindsym $key6 $emit 856
+  bindsym $key7 $emit 857
+  bindsym $key8 $emit 858
+  bindsym $key9 $emit 859
+  bindsym space mode default
+  bindsym escape mode default
+}
+
+mode "x_u86" {
+  bindsym $key0 $emit 860
+  bindsym $key1 $emit 861
+  bindsym $key2 $emit 862
+  bindsym $key3 $emit 863
+  bindsym $key4 $emit 864
+  bindsym $key5 $emit 865
+  bindsym $key6 $emit 866
+  bindsym $key7 $emit 867
+  bindsym $key8 $emit 868
+  bindsym $key9 $emit 869
+  bindsym space mode default
+  bindsym escape mode default
+}
+
+mode "x_u87" {
+  bindsym $key0 $emit 870
+  bindsym $key1 $emit 871
+  bindsym $key2 $emit 872
+  bindsym $key3 $emit 873
+  bindsym $key4 $emit 874
+  bindsym $key5 $emit 875
+  bindsym $key6 $emit 876
+  bindsym $key7 $emit 877
+  bindsym $key8 $emit 878
+  bindsym $key9 $emit 879
+  bindsym space mode default
+  bindsym escape mode default
+}
+
+mode "x_u88" {
+  bindsym $key0 $emit 880
+  bindsym $key1 $emit 881
+  bindsym $key2 $emit 882
+  bindsym $key3 $emit 883
+  bindsym $key4 $emit 884
+  bindsym $key5 $emit 885
+  bindsym $key6 $emit 886
+  bindsym $key7 $emit 887
+  bindsym $key8 $emit 888
+  bindsym $key9 $emit 889
+  bindsym space mode default
+  bindsym escape mode default
+}
+
+mode "x_u89" {
+  bindsym $key0 $emit 890
+  bindsym $key1 $emit 891
+  bindsym $key2 $emit 892
+  bindsym $key3 $emit 893
+  bindsym $key4 $emit 894
+  bindsym $key5 $emit 895
+  bindsym $key6 $emit 896
+  bindsym $key7 $emit 897
+  bindsym $key8 $emit 898
+  bindsym $key9 $emit 899
+  bindsym space mode default
+  bindsym escape mode default
+}
+
+# ================================================================ #
+
+mode "x_u90" {
+  bindsym $key0 $emit 900
+  bindsym $key1 $emit 901
+  bindsym $key2 $emit 902
+  bindsym $key3 $emit 903
+  bindsym $key4 $emit 904
+  bindsym $key5 $emit 905
+  bindsym $key6 $emit 906
+  bindsym $key7 $emit 907
+  bindsym $key8 $emit 908
+  bindsym $key9 $emit 909
+  bindsym space mode default
+  bindsym escape mode default
+}
+
+mode "x_u91" {
+  bindsym $key0 $emit 910
+  bindsym $key1 $emit 911
+  bindsym $key2 $emit 912
+  bindsym $key3 $emit 913
+  bindsym $key4 $emit 914
+  bindsym $key5 $emit 915
+  bindsym $key6 $emit 916
+  bindsym $key7 $emit 917
+  bindsym $key8 $emit 918
+  bindsym $key9 $emit 919
+  bindsym space mode default
+  bindsym escape mode default
+}
+
+mode "x_u92" {
+  bindsym $key0 $emit 920
+  bindsym $key1 $emit 921
+  bindsym $key2 $emit 922
+  bindsym $key3 $emit 923
+  bindsym $key4 $emit 924
+  bindsym $key5 $emit 925
+  bindsym $key6 $emit 926
+  bindsym $key7 $emit 927
+  bindsym $key8 $emit 928
+  bindsym $key9 $emit 929
+  bindsym space mode default
+  bindsym escape mode default
+}
+
+mode "x_u93" {
+  bindsym $key0 $emit 930
+  bindsym $key1 $emit 931
+  bindsym $key2 $emit 932
+  bindsym $key3 $emit 933
+  bindsym $key4 $emit 934
+  bindsym $key5 $emit 935
+  bindsym $key6 $emit 936
+  bindsym $key7 $emit 937
+  bindsym $key8 $emit 938
+  bindsym $key9 $emit 939
+  bindsym space mode default
+  bindsym escape mode default
+}
+
+mode "x_u94" {
+  bindsym $key0 $emit 940
+  bindsym $key1 $emit 941
+  bindsym $key2 $emit 942
+  bindsym $key3 $emit 943
+  bindsym $key4 $emit 944
+  bindsym $key5 $emit 945
+  bindsym $key6 $emit 946
+  bindsym $key7 $emit 947
+  bindsym $key8 $emit 948
+  bindsym $key9 $emit 949
+  bindsym space mode default
+  bindsym escape mode default
+}
+
+mode "x_u95" {
+  bindsym $key0 $emit 950
+  bindsym $key1 $emit 951
+  bindsym $key2 $emit 952
+  bindsym $key3 $emit 953
+  bindsym $key4 $emit 954
+  bindsym $key5 $emit 955
+  bindsym $key6 $emit 956
+  bindsym $key7 $emit 957
+  bindsym $key8 $emit 958
+  bindsym $key9 $emit 959
+  bindsym space mode default
+  bindsym escape mode default
+}
+
+mode "x_u96" {
+  bindsym $key0 $emit 960
+  bindsym $key1 $emit 961
+  bindsym $key2 $emit 962
+  bindsym $key3 $emit 963
+  bindsym $key4 $emit 964
+  bindsym $key5 $emit 965
+  bindsym $key6 $emit 966
+  bindsym $key7 $emit 967
+  bindsym $key8 $emit 968
+  bindsym $key9 $emit 969
+  bindsym space mode default
+  bindsym escape mode default
+}
+
+mode "x_u97" {
+  bindsym $key0 $emit 970
+  bindsym $key1 $emit 971
+  bindsym $key2 $emit 972
+  bindsym $key3 $emit 973
+  bindsym $key4 $emit 974
+  bindsym $key5 $emit 975
+  bindsym $key6 $emit 976
+  bindsym $key7 $emit 977
+  bindsym $key8 $emit 978
+  bindsym $key9 $emit 979
+  bindsym space mode default
+  bindsym escape mode default
+}
+
+mode "x_u98" {
+  bindsym $key0 $emit 980
+  bindsym $key1 $emit 981
+  bindsym $key2 $emit 982
+  bindsym $key3 $emit 983
+  bindsym $key4 $emit 984
+  bindsym $key5 $emit 985
+  bindsym $key6 $emit 986
+  bindsym $key7 $emit 987
+  bindsym $key8 $emit 988
+  bindsym $key9 $emit 989
+  bindsym space mode default
+  bindsym escape mode default
+}
+
+mode "x_u99" {
+  bindsym $key0 $emit 990
+  bindsym $key1 $emit 991
+  bindsym $key2 $emit 992
+  bindsym $key3 $emit 993
+  bindsym $key4 $emit 994
+  bindsym $key5 $emit 995
+  bindsym $key6 $emit 996
+  bindsym $key7 $emit 997
+  bindsym $key8 $emit 998
+  bindsym $key9 $emit 999
+  bindsym space mode default
+  bindsym escape mode default
+}
+
+# ================================================================ #
+
+#
+# Done.
+#
+
+# -*- Shell-script -*-
+#
+# etc i3 configuration file
+# etc isn't et cetera, etc is EllaThcat!
+#
+# Pass the result of pressing two keys to i3-config bash $1 $2
+#
+
+# Row 3
+
+mode "z_q" {
+  bindsym q $send q q
+  bindsym w $send q w
+  bindsym e $send q e
+  bindsym r $send q r
+  bindsym t $send q t
+  bindsym y $send q y
+  bindsym u $send q u
+  bindsym i $send q i
+  bindsym o $send q o
+  bindsym p $send q p
+  bindsym a $send q a
+  bindsym s $send q s
+  bindsym d $send q d
+  bindsym f $send q f
+  bindsym g $send q g
+  bindsym h $send q h
+  bindsym j $send q j
+  bindsym k $send q k
+  bindsym l $send q l
+  bindsym z $send q z
+  bindsym x $send q x
+  bindsym c $send q c
+  bindsym v $send q v
+  bindsym b $send q b
+  bindsym n $send q n
+  bindsym m $send q m
+
+  bindsym 0 $send q 0
+  bindsym 1 $send q 1
+  bindsym 2 $send q 2
+  bindsym 3 $send q 3
+  bindsym 4 $send q 4
+  bindsym 5 $send q 5
+  bindsym 6 $send q 6
+  bindsym 7 $send q 7
+  bindsym 8 $send q 8
+  bindsym 9 $send q 9
+
+  bindsym space mode default
+  bindsym escape mode default
+}
+
+mode "z_w" {
+  bindsym q $send w q
+  bindsym w $send w w
+  bindsym e $send w e
+  bindsym r $send w r
+  bindsym t $send w t
+  bindsym y $send w y
+  bindsym u $send w u
+  bindsym i $send w i
+  bindsym o $send w o
+  bindsym p $send w p
+  bindsym a $send w a
+  bindsym s $send w s
+  bindsym d $send w d
+  bindsym f $send w f
+  bindsym g $send w g
+  bindsym h $send w h
+  bindsym j $send w j
+  bindsym k $send w k
+  bindsym l $send w l
+  bindsym z $send w z
+  bindsym x $send w x
+  bindsym c $send w c
+  bindsym v $send w v
+  bindsym b $send w b
+  bindsym n $send w n
+  bindsym m $send w m
+
+  bindsym 0 $send w 0
+  bindsym 1 $send w 1
+  bindsym 2 $send w 2
+  bindsym 3 $send w 3
+  bindsym 4 $send w 4
+  bindsym 5 $send w 5
+  bindsym 6 $send w 6
+  bindsym 7 $send w 7
+  bindsym 8 $send w 8
+  bindsym 9 $send w 9
+
+  bindsym space mode default
+  bindsym escape mode default
+}
+
+mode "z_e" {
+  bindsym q $send e q
+  bindsym w $send e w
+  bindsym e $send e e
+  bindsym r $send e r
+  bindsym t $send e t
+  bindsym y $send e y
+  bindsym u $send e u
+  bindsym i $send e i
+  bindsym o $send e o
+  bindsym p $send e p
+  bindsym a $send e a
+  bindsym s $send e s
+  bindsym d $send e d
+  bindsym f $send e f
+  bindsym g $send e g
+  bindsym h $send e h
+  bindsym j $send e j
+  bindsym k $send e k
+  bindsym l $send e l
+  bindsym z $send e z
+  bindsym x $send e x
+  bindsym c $send e c
+  bindsym v $send e v
+  bindsym b $send e b
+  bindsym n $send e n
+  bindsym m $send e m
+
+  bindsym 0 $send e 0
+  bindsym 1 $send e 1
+  bindsym 2 $send e 2
+  bindsym 3 $send e 3
+  bindsym 4 $send e 4
+  bindsym 5 $send e 5
+  bindsym 6 $send e 6
+  bindsym 7 $send e 7
+  bindsym 8 $send e 8
+  bindsym 9 $send e 9
+
+  bindsym space mode default
+  bindsym escape mode default
+}
+
+mode "z_r" {
+  bindsym q $send r q
+  bindsym w $send r w
+  bindsym e $send r e
+  bindsym r $send r r
+  bindsym t $send r t
+  bindsym y $send r y
+  bindsym u $send r u
+  bindsym i $send r i
+  bindsym o $send r o
+  bindsym p $send r p
+  bindsym a $send r a
+  bindsym s $send r s
+  bindsym d $send r d
+  bindsym f $send r f
+  bindsym g $send r g
+  bindsym h $send r h
+  bindsym j $send r j
+  bindsym k $send r k
+  bindsym l $send r l
+  bindsym z $send r z
+  bindsym x $send r x
+  bindsym c $send r c
+  bindsym v $send r v
+  bindsym b $send r b
+  bindsym n $send r n
+  bindsym m $send r m
+
+  bindsym 0 $send r 0
+  bindsym 1 $send r 1
+  bindsym 2 $send r 2
+  bindsym 3 $send r 3
+  bindsym 4 $send r 4
+  bindsym 5 $send r 5
+  bindsym 6 $send r 6
+  bindsym 7 $send r 7
+  bindsym 8 $send r 8
+  bindsym 9 $send r 9
+
+  bindsym space mode default
+  bindsym escape mode default
+}
+
+mode "z_t" {
+  bindsym q $send t q
+  bindsym w $send t w
+  bindsym e $send t e
+  bindsym r $send t r
+  bindsym t $send t t
+  bindsym y $send t y
+  bindsym u $send t u
+  bindsym i $send t i
+  bindsym o $send t o
+  bindsym p $send t p
+  bindsym a $send t a
+  bindsym s $send t s
+  bindsym d $send t d
+  bindsym f $send t f
+  bindsym g $send t g
+  bindsym h $send t h
+  bindsym j $send t j
+  bindsym k $send t k
+  bindsym l $send t l
+  bindsym z $send t z
+  bindsym x $send t x
+  bindsym c $send t c
+  bindsym v $send t v
+  bindsym b $send t b
+  bindsym n $send t n
+  bindsym m $send t m
+
+  bindsym 0 $send t 0
+  bindsym 1 $send t 1
+  bindsym 2 $send t 2
+  bindsym 3 $send t 3
+  bindsym 4 $send t 4
+  bindsym 5 $send t 5
+  bindsym 6 $send t 6
+  bindsym 7 $send t 7
+  bindsym 8 $send t 8
+  bindsym 9 $send t 9
+
+  bindsym space mode default
+  bindsym escape mode default
+}
+
+mode "z_y" {
+  bindsym q $send y q
+  bindsym w $send y w
+  bindsym e $send y e
+  bindsym r $send y r
+  bindsym t $send y t
+  bindsym y $send y y
+  bindsym u $send y u
+  bindsym i $send y i
+  bindsym o $send y o
+  bindsym p $send y p
+  bindsym a $send y a
+  bindsym s $send y s
+  bindsym d $send y d
+  bindsym f $send y f
+  bindsym g $send y g
+  bindsym h $send y h
+  bindsym j $send y j
+  bindsym k $send y k
+  bindsym l $send y l
+  bindsym z $send y z
+  bindsym x $send y x
+  bindsym c $send y c
+  bindsym v $send y v
+  bindsym b $send y b
+  bindsym n $send y n
+  bindsym m $send y m
+
+  bindsym 0 $send y 0
+  bindsym 1 $send y 1
+  bindsym 2 $send y 2
+  bindsym 3 $send y 3
+  bindsym 4 $send y 4
+  bindsym 5 $send y 5
+  bindsym 6 $send y 6
+  bindsym 7 $send y 7
+  bindsym 8 $send y 8
+  bindsym 9 $send y 9
+
+  bindsym space mode default
+  bindsym escape mode default
+}
+
+mode "z_u" {
+  bindsym q $send u q
+  bindsym w $send u w
+  bindsym e $send u e
+  bindsym r $send u r
+  bindsym t $send u t
+  bindsym y $send u y
+  bindsym u $send u u
+  bindsym i $send u i
+  bindsym o $send u o
+  bindsym p $send u p
+  bindsym a $send u a
+  bindsym s $send u s
+  bindsym d $send u d
+  bindsym f $send u f
+  bindsym g $send u g
+  bindsym h $send u h
+  bindsym j $send u j
+  bindsym k $send u k
+  bindsym l $send u l
+  bindsym z $send u z
+  bindsym x $send u x
+  bindsym c $send u c
+  bindsym v $send u v
+  bindsym b $send u b
+  bindsym n $send u n
+  bindsym m $send u m
+
+  bindsym 0 $send u 0
+  bindsym 1 $send u 1
+  bindsym 2 $send u 2
+  bindsym 3 $send u 3
+  bindsym 4 $send u 4
+  bindsym 5 $send u 5
+  bindsym 6 $send u 6
+  bindsym 7 $send u 7
+  bindsym 8 $send u 8
+  bindsym 9 $send u 9
+
+  bindsym space mode default
+  bindsym escape mode default
+}
+
+mode "z_i" {
+  bindsym q $send i q
+  bindsym w $send i w
+  bindsym e $send i e
+  bindsym r $send i r
+  bindsym t $send i t
+  bindsym y $send i y
+  bindsym u $send i u
+  bindsym i $send i i
+  bindsym o $send i o
+  bindsym p $send i p
+  bindsym a $send i a
+  bindsym s $send i s
+  bindsym d $send i d
+  bindsym f $send i f
+  bindsym g $send i g
+  bindsym h $send i h
+  bindsym j $send i j
+  bindsym k $send i k
+  bindsym l $send i l
+  bindsym z $send i z
+  bindsym x $send i x
+  bindsym c $send i c
+  bindsym v $send i v
+  bindsym b $send i b
+  bindsym n $send i n
+  bindsym m $send i m
+
+  bindsym 0 $send i 0
+  bindsym 1 $send i 1
+  bindsym 2 $send i 2
+  bindsym 3 $send i 3
+  bindsym 4 $send i 4
+  bindsym 5 $send i 5
+  bindsym 6 $send i 6
+  bindsym 7 $send i 7
+  bindsym 8 $send i 8
+  bindsym 9 $send i 9
+
+  bindsym space mode default
+  bindsym escape mode default
+}
+
+mode "z_o" {
+  bindsym q $send o q
+  bindsym w $send o w
+  bindsym e $send o e
+  bindsym r $send o r
+  bindsym t $send o t
+  bindsym y $send o y
+  bindsym u $send o u
+  bindsym i $send o i
+  bindsym o $send o o
+  bindsym p $send o p
+  bindsym a $send o a
+  bindsym s $send o s
+  bindsym d $send o d
+  bindsym f $send o f
+  bindsym g $send o g
+  bindsym h $send o h
+  bindsym j $send o j
+  bindsym k $send o k
+  bindsym l $send o l
+  bindsym z $send o z
+  bindsym x $send o x
+  bindsym c $send o c
+  bindsym v $send o v
+  bindsym b $send o b
+  bindsym n $send o n
+  bindsym m $send o m
+
+  bindsym 0 $send o 0
+  bindsym 1 $send o 1
+  bindsym 2 $send o 2
+  bindsym 3 $send o 3
+  bindsym 4 $send o 4
+  bindsym 5 $send o 5
+  bindsym 6 $send o 6
+  bindsym 7 $send o 7
+  bindsym 8 $send o 8
+  bindsym 9 $send o 9
+
+  bindsym space mode default
+  bindsym escape mode default
+}
+
+mode "z_p" {
+  bindsym q $send p q
+  bindsym w $send p w
+  bindsym e $send p e
+  bindsym r $send p r
+  bindsym t $send p t
+  bindsym y $send p y
+  bindsym u $send p u
+  bindsym i $send p i
+  bindsym o $send p o
+  bindsym p $send p p
+  bindsym a $send p a
+  bindsym s $send p s
+  bindsym d $send p d
+  bindsym f $send p f
+  bindsym g $send p g
+  bindsym h $send p h
+  bindsym j $send p j
+  bindsym k $send p k
+  bindsym l $send p l
+  bindsym z $send p z
+  bindsym x $send p x
+  bindsym c $send p c
+  bindsym v $send p v
+  bindsym b $send p b
+  bindsym n $send p n
+  bindsym m $send p m
+
+  bindsym 0 $send p 0
+  bindsym 1 $send p 1
+  bindsym 2 $send p 2
+  bindsym 3 $send p 3
+  bindsym 4 $send p 4
+  bindsym 5 $send p 5
+  bindsym 6 $send p 6
+  bindsym 7 $send p 7
+  bindsym 8 $send p 8
+  bindsym 9 $send p 9
+
+  bindsym space mode default
+  bindsym escape mode default
+}
+
+# Row 2
+
+mode "z_a" {
+  bindsym q $send a q
+  bindsym w $send a w
+  bindsym e $send a e
+  bindsym r $send a r
+  bindsym t $send a t
+  bindsym y $send a y
+  bindsym u $send a u
+  bindsym i $send a i
+  bindsym o $send a o
+  bindsym p $send a p
+  bindsym a $send a a
+  bindsym s $send a s
+  bindsym d $send a d
+  bindsym f $send a f
+  bindsym g $send a g
+  bindsym h $send a h
+  bindsym j $send a j
+  bindsym k $send a k
+  bindsym l $send a l
+  bindsym z $send a z
+  bindsym x $send a x
+  bindsym c $send a c
+  bindsym v $send a v
+  bindsym b $send a b
+  bindsym n $send a n
+  bindsym m $send a m
+
+  bindsym 0 $send a 0
+  bindsym 1 $send a 1
+  bindsym 2 $send a 2
+  bindsym 3 $send a 3
+  bindsym 4 $send a 4
+  bindsym 5 $send a 5
+  bindsym 6 $send a 6
+  bindsym 7 $send a 7
+  bindsym 8 $send a 8
+  bindsym 9 $send a 9
+
+  bindsym space mode default
+  bindsym escape mode default
+}
+
+mode "z_s" {
+  bindsym q $send s q
+  bindsym w $send s w
+  bindsym e $send s e
+  bindsym r $send s r
+  bindsym t $send s t
+  bindsym y $send s y
+  bindsym u $send s u
+  bindsym i $send s i
+  bindsym o $send s o
+  bindsym p $send s p
+  bindsym a $send s a
+  bindsym s $send s s
+  bindsym d $send s d
+  bindsym f $send s f
+  bindsym g $send s g
+  bindsym h $send s h
+  bindsym j $send s j
+  bindsym k $send s k
+  bindsym l $send s l
+  bindsym z $send s z
+  bindsym x $send s x
+  bindsym c $send s c
+  bindsym v $send s v
+  bindsym b $send s b
+  bindsym n $send s n
+  bindsym m $send s m
+
+  bindsym 0 $send s 0
+  bindsym 1 $send s 1
+  bindsym 2 $send s 2
+  bindsym 3 $send s 3
+  bindsym 4 $send s 4
+  bindsym 5 $send s 5
+  bindsym 6 $send s 6
+  bindsym 7 $send s 7
+  bindsym 8 $send s 8
+  bindsym 9 $send s 9
+
+  bindsym space mode default
+  bindsym escape mode default
+}
+
+mode "z_d" {
+  bindsym q $send d q
+  bindsym w $send d w
+  bindsym e $send d e
+  bindsym r $send d r
+  bindsym t $send d t
+  bindsym y $send d y
+  bindsym u $send d u
+  bindsym i $send d i
+  bindsym o $send d o
+  bindsym p $send d p
+  bindsym a $send d a
+  bindsym s $send d s
+  bindsym d $send d d
+  bindsym f $send d f
+  bindsym g $send d g
+  bindsym h $send d h
+  bindsym j $send d j
+  bindsym k $send d k
+  bindsym l $send d l
+  bindsym z $send d z
+  bindsym x $send d x
+  bindsym c $send d c
+  bindsym v $send d v
+  bindsym b $send d b
+  bindsym n $send d n
+  bindsym m $send d m
+
+  bindsym 0 $send d 0
+  bindsym 1 $send d 1
+  bindsym 2 $send d 2
+  bindsym 3 $send d 3
+  bindsym 4 $send d 4
+  bindsym 5 $send d 5
+  bindsym 6 $send d 6
+  bindsym 7 $send d 7
+  bindsym 8 $send d 8
+  bindsym 9 $send d 9
+
+  bindsym space mode default
+  bindsym escape mode default
+}
+
+mode "z_f" {
+  bindsym q $send f q
+  bindsym w $send f w
+  bindsym e $send f e
+  bindsym r $send f r
+  bindsym t $send f t
+  bindsym y $send f y
+  bindsym u $send f u
+  bindsym i $send f i
+  bindsym o $send f o
+  bindsym p $send f p
+  bindsym a $send f a
+  bindsym s $send f s
+  bindsym d $send f d
+  bindsym f $send f f
+  bindsym g $send f g
+  bindsym h $send f h
+  bindsym j $send f j
+  bindsym k $send f k
+  bindsym l $send f l
+  bindsym z $send f z
+  bindsym x $send f x
+  bindsym c $send f c
+  bindsym v $send f v
+  bindsym b $send f b
+  bindsym n $send f n
+  bindsym m $send f m
+
+  bindsym 0 $send f 0
+  bindsym 1 $send f 1
+  bindsym 2 $send f 2
+  bindsym 3 $send f 3
+  bindsym 4 $send f 4
+  bindsym 5 $send f 5
+  bindsym 6 $send f 6
+  bindsym 7 $send f 7
+  bindsym 8 $send f 8
+  bindsym 9 $send f 9
+
+  bindsym space mode default
+  bindsym escape mode default
+}
+
+mode "z_g" {
+  bindsym q $send g q
+  bindsym w $send g w
+  bindsym e $send g e
+  bindsym r $send g r
+  bindsym t $send g t
+  bindsym y $send g y
+  bindsym u $send g u
+  bindsym i $send g i
+  bindsym o $send g o
+  bindsym p $send g p
+  bindsym a $send g a
+  bindsym s $send g s
+  bindsym d $send g d
+  bindsym f $send g f
+  bindsym g $send g g
+  bindsym h $send g h
+  bindsym j $send g j
+  bindsym k $send g k
+  bindsym l $send g l
+  bindsym z $send g z
+  bindsym x $send g x
+  bindsym c $send g c
+  bindsym v $send g v
+  bindsym b $send g b
+  bindsym n $send g n
+  bindsym m $send g m
+
+  bindsym 0 $send g 0
+  bindsym 1 $send g 1
+  bindsym 2 $send g 2
+  bindsym 3 $send g 3
+  bindsym 4 $send g 4
+  bindsym 5 $send g 5
+  bindsym 6 $send g 6
+  bindsym 7 $send g 7
+  bindsym 8 $send g 8
+  bindsym 9 $send g 9
+
+  bindsym space mode default
+  bindsym escape mode default
+}
+
+mode "z_h" {
+  bindsym q $send h q
+  bindsym w $send h w
+  bindsym e $send h e
+  bindsym r $send h r
+  bindsym t $send h t
+  bindsym y $send h y
+  bindsym u $send h u
+  bindsym i $send h i
+  bindsym o $send h o
+  bindsym p $send h p
+  bindsym a $send h a
+  bindsym s $send h s
+  bindsym d $send h d
+  bindsym f $send h f
+  bindsym g $send h g
+  bindsym h $send h h
+  bindsym j $send h j
+  bindsym k $send h k
+  bindsym l $send h l
+  bindsym z $send h z
+  bindsym x $send h x
+  bindsym c $send h c
+  bindsym v $send h v
+  bindsym b $send h b
+  bindsym n $send h n
+  bindsym m $send h m
+
+  bindsym 0 $send h 0
+  bindsym 1 $send h 1
+  bindsym 2 $send h 2
+  bindsym 3 $send h 3
+  bindsym 4 $send h 4
+  bindsym 5 $send h 5
+  bindsym 6 $send h 6
+  bindsym 7 $send h 7
+  bindsym 8 $send h 8
+  bindsym 9 $send h 9
+
+  bindsym space mode default
+  bindsym escape mode default
+}
+
+mode "z_j" {
+  bindsym q $send j q
+  bindsym w $send j w
+  bindsym e $send j e
+  bindsym r $send j r
+  bindsym t $send j t
+  bindsym y $send j y
+  bindsym u $send j u
+  bindsym i $send j i
+  bindsym o $send j o
+  bindsym p $send j p
+  bindsym a $send j a
+  bindsym s $send j s
+  bindsym d $send j d
+  bindsym f $send j f
+  bindsym g $send j g
+  bindsym h $send j h
+  bindsym j $send j j
+  bindsym k $send j k
+  bindsym l $send j l
+  bindsym z $send j z
+  bindsym x $send j x
+  bindsym c $send j c
+  bindsym v $send j v
+  bindsym b $send j b
+  bindsym n $send j n
+  bindsym m $send j m
+
+  bindsym 0 $send j 0
+  bindsym 1 $send j 1
+  bindsym 2 $send j 2
+  bindsym 3 $send j 3
+  bindsym 4 $send j 4
+  bindsym 5 $send j 5
+  bindsym 6 $send j 6
+  bindsym 7 $send j 7
+  bindsym 8 $send j 8
+  bindsym 9 $send j 9
+
+  bindsym space mode default
+  bindsym escape mode default
+}
+
+mode "z_k" {
+  bindsym q $send k q
+  bindsym w $send k w
+  bindsym e $send k e
+  bindsym r $send k r
+  bindsym t $send k t
+  bindsym y $send k y
+  bindsym u $send k u
+  bindsym i $send k i
+  bindsym o $send k o
+  bindsym p $send k p
+  bindsym a $send k a
+  bindsym s $send k s
+  bindsym d $send k d
+  bindsym f $send k f
+  bindsym g $send k g
+  bindsym h $send k h
+  bindsym j $send k j
+  bindsym k $send k k
+  bindsym l $send k l
+  bindsym z $send k z
+  bindsym x $send k x
+  bindsym c $send k c
+  bindsym v $send k v
+  bindsym b $send k b
+  bindsym n $send k n
+  bindsym m $send k m
+
+  bindsym 0 $send k 0
+  bindsym 1 $send k 1
+  bindsym 2 $send k 2
+  bindsym 3 $send k 3
+  bindsym 4 $send k 4
+  bindsym 5 $send k 5
+  bindsym 6 $send k 6
+  bindsym 7 $send k 7
+  bindsym 8 $send k 8
+  bindsym 9 $send k 9
+
+  bindsym space mode default
+  bindsym escape mode default
+}
+
+mode "z_l" {
+  bindsym q $send l q
+  bindsym w $send l w
+  bindsym e $send l e
+  bindsym r $send l r
+  bindsym t $send l t
+  bindsym y $send l y
+  bindsym u $send l u
+  bindsym i $send l i
+  bindsym o $send l o
+  bindsym p $send l p
+  bindsym a $send l a
+  bindsym s $send l s
+  bindsym d $send l d
+  bindsym f $send l f
+  bindsym g $send l g
+  bindsym h $send l h
+  bindsym j $send l j
+  bindsym k $send l k
+  bindsym l $send l l
+  bindsym z $send l z
+  bindsym x $send l x
+  bindsym c $send l c
+  bindsym v $send l v
+  bindsym b $send l b
+  bindsym n $send l n
+  bindsym m $send l m
+
+  bindsym 0 $send l 0
+  bindsym 1 $send l 1
+  bindsym 2 $send l 2
+  bindsym 3 $send l 3
+  bindsym 4 $send l 4
+  bindsym 5 $send l 5
+  bindsym 6 $send l 6
+  bindsym 7 $send l 7
+  bindsym 8 $send l 8
+  bindsym 9 $send l 9
+
+  bindsym space mode default
+  bindsym escape mode default
+}
+
+# Row 1
+
+mode "z_z" {
+  bindsym q $send z q
+  bindsym w $send z w
+  bindsym e $send z e
+  bindsym r $send z r
+  bindsym t $send z t
+  bindsym y $send z y
+  bindsym u $send z u
+  bindsym i $send z i
+  bindsym o $send z o
+  bindsym p $send z p
+  bindsym a $send z a
+  bindsym s $send z s
+  bindsym d $send z d
+  bindsym f $send z f
+  bindsym g $send z g
+  bindsym h $send z h
+  bindsym j $send z j
+  bindsym k $send z k
+  bindsym l $send z l
+  bindsym z $send z z
+  bindsym x $send z x
+  bindsym c $send z c
+  bindsym v $send z v
+  bindsym b $send z b
+  bindsym n $send z n
+  bindsym m $send z m
+
+  bindsym 0 $send z 0
+  bindsym 1 $send z 1
+  bindsym 2 $send z 2
+  bindsym 3 $send z 3
+  bindsym 4 $send z 4
+  bindsym 5 $send z 5
+  bindsym 6 $send z 6
+  bindsym 7 $send z 7
+  bindsym 8 $send z 8
+  bindsym 9 $send z 9
+
+  bindsym space mode default
+  bindsym escape mode default
+}
+
+mode "z_x" {
+  bindsym q $send x q
+  bindsym w $send x w
+  bindsym e $send x e
+  bindsym r $send x r
+  bindsym t $send x t
+  bindsym y $send x y
+  bindsym u $send x u
+  bindsym i $send x i
+  bindsym o $send x o
+  bindsym p $send x p
+  bindsym a $send x a
+  bindsym s $send x s
+  bindsym d $send x d
+  bindsym f $send x f
+  bindsym g $send x g
+  bindsym h $send x h
+  bindsym j $send x j
+  bindsym k $send x k
+  bindsym l $send x l
+  bindsym z $send x z
+  bindsym x $send x x
+  bindsym c $send x c
+  bindsym v $send x v
+  bindsym b $send x b
+  bindsym n $send x n
+  bindsym m $send x m
+
+  bindsym 0 $send x 0
+  bindsym 1 $send x 1
+  bindsym 2 $send x 2
+  bindsym 3 $send x 3
+  bindsym 4 $send x 4
+  bindsym 5 $send x 5
+  bindsym 6 $send x 6
+  bindsym 7 $send x 7
+  bindsym 8 $send x 8
+  bindsym 9 $send x 9
+
+  bindsym space mode default
+  bindsym escape mode default
+}
+
+mode "z_c" {
+  bindsym q $send c q
+  bindsym w $send c w
+  bindsym e $send c e
+  bindsym r $send c r
+  bindsym t $send c t
+  bindsym y $send c y
+  bindsym u $send c u
+  bindsym i $send c i
+  bindsym o $send c o
+  bindsym p $send c p
+  bindsym a $send c a
+  bindsym s $send c s
+  bindsym d $send c d
+  bindsym f $send c f
+  bindsym g $send c g
+  bindsym h $send c h
+  bindsym j $send c j
+  bindsym k $send c k
+  bindsym l $send c l
+  bindsym z $send c z
+  bindsym x $send c x
+  bindsym c $send c c
+  bindsym v $send c v
+  bindsym b $send c b
+  bindsym n $send c n
+  bindsym m $send c m
+
+  bindsym 0 $send c 0
+  bindsym 1 $send c 1
+  bindsym 2 $send c 2
+  bindsym 3 $send c 3
+  bindsym 4 $send c 4
+  bindsym 5 $send c 5
+  bindsym 6 $send c 6
+  bindsym 7 $send c 7
+  bindsym 8 $send c 8
+  bindsym 9 $send c 9
+
+  bindsym space mode default
+  bindsym escape mode default
+}
+
+mode "z_v" {
+  bindsym q $send v q
+  bindsym w $send v w
+  bindsym e $send v e
+  bindsym r $send v r
+  bindsym t $send v t
+  bindsym y $send v y
+  bindsym u $send v u
+  bindsym i $send v i
+  bindsym o $send v o
+  bindsym p $send v p
+  bindsym a $send v a
+  bindsym s $send v s
+  bindsym d $send v d
+  bindsym f $send v f
+  bindsym g $send v g
+  bindsym h $send v h
+  bindsym j $send v j
+  bindsym k $send v k
+  bindsym l $send v l
+  bindsym z $send v z
+  bindsym x $send v x
+  bindsym c $send v c
+  bindsym v $send v v
+  bindsym b $send v b
+  bindsym n $send v n
+  bindsym m $send v m
+
+  bindsym 0 $send v 0
+  bindsym 1 $send v 1
+  bindsym 2 $send v 2
+  bindsym 3 $send v 3
+  bindsym 4 $send v 4
+  bindsym 5 $send v 5
+  bindsym 6 $send v 6
+  bindsym 7 $send v 7
+  bindsym 8 $send v 8
+  bindsym 9 $send v 9
+
+  bindsym space mode default
+  bindsym escape mode default
+}
+
+mode "z_b" {
+  bindsym q $send b q
+  bindsym w $send b w
+  bindsym e $send b e
+  bindsym r $send b r
+  bindsym t $send b t
+  bindsym y $send b y
+  bindsym u $send b u
+  bindsym i $send b i
+  bindsym o $send b o
+  bindsym p $send b p
+  bindsym a $send b a
+  bindsym s $send b s
+  bindsym d $send b d
+  bindsym f $send b f
+  bindsym g $send b g
+  bindsym h $send b h
+  bindsym j $send b j
+  bindsym k $send b k
+  bindsym l $send b l
+  bindsym z $send b z
+  bindsym x $send b x
+  bindsym c $send b c
+  bindsym v $send b v
+  bindsym b $send b b
+  bindsym n $send b n
+  bindsym m $send b m
+
+  bindsym 0 $send b 0
+  bindsym 1 $send b 1
+  bindsym 2 $send b 2
+  bindsym 3 $send b 3
+  bindsym 4 $send b 4
+  bindsym 5 $send b 5
+  bindsym 6 $send b 6
+  bindsym 7 $send b 7
+  bindsym 8 $send b 8
+  bindsym 9 $send b 9
+
+  bindsym space mode default
+  bindsym escape mode default
+}
+
+mode "z_n" {
+  bindsym q $send n q
+  bindsym w $send n w
+  bindsym e $send n e
+  bindsym r $send n r
+  bindsym t $send n t
+  bindsym y $send n y
+  bindsym u $send n u
+  bindsym i $send n i
+  bindsym o $send n o
+  bindsym p $send n p
+  bindsym a $send n a
+  bindsym s $send n s
+  bindsym d $send n d
+  bindsym f $send n f
+  bindsym g $send n g
+  bindsym h $send n h
+  bindsym j $send n j
+  bindsym k $send n k
+  bindsym l $send n l
+  bindsym z $send n z
+  bindsym x $send n x
+  bindsym c $send n c
+  bindsym v $send n v
+  bindsym b $send n b
+  bindsym n $send n n
+  bindsym m $send n m
+
+  bindsym 0 $send n 0
+  bindsym 1 $send n 1
+  bindsym 2 $send n 2
+  bindsym 3 $send n 3
+  bindsym 4 $send n 4
+  bindsym 5 $send n 5
+  bindsym 6 $send n 6
+  bindsym 7 $send n 7
+  bindsym 8 $send n 8
+  bindsym 9 $send n 9
+
+  bindsym space mode default
+  bindsym escape mode default
+}
+
+mode "z_m" {
+  bindsym q $send m q
+  bindsym w $send m w
+  bindsym e $send m e
+  bindsym r $send m r
+  bindsym t $send m t
+  bindsym y $send m y
+  bindsym u $send m u
+  bindsym i $send m i
+  bindsym o $send m o
+  bindsym p $send m p
+  bindsym a $send m a
+  bindsym s $send m s
+  bindsym d $send m d
+  bindsym f $send m f
+  bindsym g $send m g
+  bindsym h $send m h
+  bindsym j $send m j
+  bindsym k $send m k
+  bindsym l $send m l
+  bindsym z $send m z
+  bindsym x $send m x
+  bindsym c $send m c
+  bindsym v $send m v
+  bindsym b $send m b
+  bindsym n $send m n
+  bindsym m $send m m
+
+  bindsym 0 $send m 0
+  bindsym 1 $send m 1
+  bindsym 2 $send m 2
+  bindsym 3 $send m 3
+  bindsym 4 $send m 4
+  bindsym 5 $send m 5
+  bindsym 6 $send m 6
+  bindsym 7 $send m 7
+  bindsym 8 $send m 8
+  bindsym 9 $send m 9
+
+  # Goes to mode default and clears the binding mode indicator.
+  bindsym space mode default
+  bindsym escape mode default
+}
+
+
+
+#
+# Done.
+#
+
+# This example yields files derived from 'config' (this file) by
+# 'make' as follows:
+
+# config.inc = config after inserting into config from magic comments
+# config.tmp - config.inc after stream editing output names etc
+
+# ================================================================ #
+
+#! My right hand muscle memory binding for dropdown terminal, ymmv.
+bindsym control+Delete exec --no-startup-id  "~/local/i3/bin/i3-config-bash emacsinside toggle"
+
+# ================================================================ #
+
+#
+# I3BAR SETTINGS BEGIN HERE.
+#
+
+# From right to left:
+# 1) Show system indicators - i3status
+# 2) Show cursor xy, sensors - i3-status
+# 3) Show this output's workspaces - i3bar
+# 4) Show the current binding mode - i3bar
+
+bar {
+  # Show the bar on these outputs.
+  output DP-1
+  output DP-4
+  i3bar_command /usr/bin/i3bar
+  # A wrapper around "i3status" may be easier than mastering the
+  # dot-i3status.conf syntax. Specify the wrapper script in the
+  # i3bar declaration.
+  status_command i3status
+
+  # The long-standing default size is 11, to match the status bar,
+  # but size 12 is better for the binding mode indicator.
+  font pango:DejaVu Sans 12
+  position bottom
+
+  # EllaTheCat strongly recommends that the binding mode indicator
+  # is enabled here and that it stands out with a bright background.
+  binding_mode_indicator yes
+  colors {
+  binding_mode #ffff00 #ffff00 #000000
+  }
+  # These are better enabled, but you may disable them without any
+  # side effect on the binding mode indicator.
+  workspace_buttons yes
+  # The long-standing default squeezes the buttons into minimum
+  # space, this value gives a nice even look.
+  workspace_min_width 40
+
+  # Mouse buttons that can take effect when the pointer is in the
+  # i3bar area. Button 1 selects workspace tabs so is off-limits.
+  bindsym button2 nop
+  bindsym button3 move workpace to output next
+  # The MS mouse wheel 'feel' on my mouse is especially grotty.
+}
+
+#
+# I3BAR SETTINGS END HERE.
+#
+
+# I3WM INCLUDES ================================================== #
+
+# These two examples use the i3wm 4.20 (or later) method of including
+# files at runtime. This makes things more difficult compared to the
+# EllaTheCat method, but it's important to show it can be used and
+# what are the consequnces.
+
+# i3 4.20 include
+# assign / for_window / workspace declarations
+include ~/local/i3/cfg/cfg07
+
+# i3 4.20 include
+# initialisations performed by executing scripts and apps.
+include ~/local/i3/cfg/cfg08
+
+# MORE REGARDING SECONDARY MODE ================================== #
+
+# Commands of length 2 require 3 keystrokes, 50% overhead
+# (1) Press Secondary,
+# (2) Press a lowercase letter,
+# (3) Press a lowercase letter OR a digit.,
+
+# Commands of length 4 require 6 keystrokes, also 50% overhead, but
+# see how (1)(2) can become a fast double tap, and how (4)(5)(6) can
+# use the numpad arrangement to advantage.
+
+# (1) Press Secondary,
+# (2) Press Secondary,
+# (3) Press a letter,
+# (4) Press a digit,
+# (5) Press a digit.
+# (6) Press a digit.
+
+# Step (3) is the weak point, if we send the letter from the eponymous
+# key. Using 4 keys adjacent to the numpad minimises finger movement,
+# hence there are suitble bindings in $AltSecondary mode.
+
+# If you are prepared to use dedicated keys then you can combine steps
+# (1)(2)(3) into one keystroke, hence there are "dedicated F-keys" F5
+# through F9 (more or less) adjacent to the top row of the numpad,
+# operable in default mode.
+
+# SECONDARY COMMAND 'zz' LISTS COMMAND ALIASES and SHOWS HELP ==== #
+
+# Entering a command [a-z][a-z0-9] may result in a visit to a
+# workspace whose name bears some relation to an application,
+# e.g. an app that occupies over half the workspace area:
+
+# f3 = firefox window 3
+# e2 = emacs window 2
+# sy = synaptics
+# gm = gmail
+# tb = thunderbird
+
+# If the workspace so entered is empty, the associated application
+# is launched.
+
+# If the workspace so entered is empty, and there is no associated
+# application, a placeholder container is added so the user can add
+# more containers to the workspace without the system tidying up
+# otherwise empty containers.
+
+# How does the system recognise an "associated" application? The file
+# "cfg/apps00" holds two bash associative arrays, $wsapps and
+# $nonwsapps. $ws_apps is the set of commands that exhibit the "focus
+# and if required, launch" behaviour just described, $not_wsapps is
+# the set of commands that 'do something", everything else (commands in
+# neither array) exhibits the placeholder behaviour.
+
+# The file "i3-focus-app-by-alias" implements the aforementioned
+# logic. It has a history. It is peppered with comments because
+# frankly it is fragile as f-ck. I've grown to like the notify-send
+# pous that tell me what it's thinking.
+
+# START SEQUENCE ================================================= #
+
+# See i3-config-bash function session with argument startup.
+
+#
+# EllaTheCat 2022-10-23
+#

@@ -1,0 +1,297 @@
+bindsym Mod4+Return exec gnome-terminal
+# Bind workspaces to screens
+workspace "a-l" output DP-1
+workspace a output DP-4
+workspace s output DP-4
+workspace "s-l" output DP-1
+workspace "d-l" output DP-1
+workspace d output DP-4
+workspace "f-l" output DP-1
+workspace f output DP-4
+workspace "z-l" output DP-1
+workspace z output DP-4
+workspace "x-l" output DP-1
+workspace x output DP-4
+workspace "c-l" output DP-1
+workspace c output DP-4
+workspace "v-l" output DP-1
+workspace v output DP-4
+client.focused          #333333 #00aa00 #ffffff #2e9ef4   #185522
+client.focused_inactive #333333 #555500 #dddddd #484e50   #5f676a
+client.unfocused        #333333 #444444 #bbbbbb #292d2e   #222222
+client.urgent           #880000 #444444 #ffffff #880000   #900000
+client.placeholder      #000000 #444444 #ffffff #000000   #0c0c0c
+client.background       #ffffff
+font "pango:DejaVu Sans 12"
+
+# Left screen, page a
+assign [class="^firefox$"] f
+## Left screen, page s(ocial)
+assign [class="^Slack$"] "c-l"
+## Left screen, page s(ocial)
+assign [class="^Signal$"] c
+## Main screen, page s(ocial)
+assign [class="^Mattermost$"] c
+## Main screen, page c(ocial)
+assign [class="^Steam$"] s
+## Main screen, page x
+for_window [class="^Google-chrome$"] move container to workspace x
+
+bar {
+  # Show the bar on all outputs.
+  # $(for screen in $(cat cfg/screens | head -n 1 ); do ( echo output $screen; ) ; done )
+
+
+  status_command i3status
+
+  # The long-standing default size is 11, to match the status bar,
+  # but size 12 is better for the binding mode indicator.
+  font pango:DejaVu Sans 12
+  position bottom
+
+  # EllaTheCat strongly recommends that the binding mode indicator
+  # is enabled here and that it stands out with a bright background.
+  binding_mode_indicator yes
+
+  # These are better enabled, but you may disable them without any
+  # side effect on the binding mode indicator.
+  workspace_buttons yes
+
+  # The long-standing default squeezes the buttons into minimum
+  # space, this value gives a nice even look.
+  workspace_min_width 40
+
+  # Mouse buttons that can take effect when the pointer is in the
+  # i3bar area. Button 1 selects workspace tabs so is off-limits.
+  bindsym button2 nop
+  bindsym button3 nop
+  bindsym button4 nop
+  bindsym button5 nop
+  bindsym button6 nop
+  bindsym button7 nop
+  colors {
+    binding_mode #ffff00 #ffff00 #000000
+  }
+}
+
+# Exit fullscreen when a popup is opened
+popup_during_fullscreen smart
+tiling_drag titlebar
+focus_follows_mouse no
+focus_on_window_activation urgent
+
+bindsym Mod4+f fullscreen toggle
+bindsym Mod4+d fullscreen disable; exec synapse
+floating_modifier Mod4
+bindsym Print exec gnome-screenshot -i
+
+mode F11 {
+  bindsym space mode default
+  bindsym Escape mode default
+}
+bindsym F11 mode F11
+# Authenticate on login
+exec --no-startup-id /usr/lib/policykit-1-gnome/polkit-gnome-authentication-agent-1 &
+
+# Keep calibre server running
+exec --no-startup-id /home/daniel/anaconda3/bin/cps &
+
+# Show a background
+exec --no-startup-id feh --on-last-slide resume --bg-center ~/Pictures/backgrounds/out.jpg
+
+# Disable ctrl+q to quit, since I keep losing work
+bindsym ctrl+q workspace $ws1-left;workspace $ws1;
+
+# Merge x selection with clipboard
+exec --no-startup-id i3-msg 'exec diodon'
+
+# Load keys
+# This is done in ~/.xsession
+# exec_always --no-startup-id "setxkbmap -option terminate:ctrl_alt_bksp"
+# exec_always --no-startup-id "setxkbmap -option caps:super"
+bindsym F1 mode "switch-workspace (a s d f z x c v)"
+mode "switch-workspace (a s d f z x c v)" {
+
+
+
+        bindsym a \
+         \
+        workspace "a-l"; \
+         \
+        workspace a; \
+         \
+        ; mode default;
+
+        bindsym s \
+         \
+        workspace "s-l"; \
+         \
+        workspace s; \
+         \
+        ; mode default;
+
+        bindsym d \
+         \
+        workspace "d-l"; \
+         \
+        workspace d; \
+         \
+        ; mode default;
+
+        bindsym f \
+         \
+        workspace "f-l"; \
+         \
+        workspace f; \
+         \
+        ; mode default;
+
+        bindsym z \
+         \
+        workspace "z-l"; \
+         \
+        workspace z; \
+         \
+        ; mode default;
+
+        bindsym x \
+         \
+        workspace "x-l"; \
+         \
+        workspace x; \
+         \
+        ; mode default;
+
+        bindsym c \
+         \
+        workspace "c-l"; \
+         \
+        workspace c; \
+         \
+        ; mode default;
+
+        bindsym v \
+         \
+        workspace "v-l"; \
+         \
+        workspace v; \
+         \
+        ; mode default;
+
+
+    bindsym space mode default
+    bindsym Escape mode default
+}
+
+bindsym F2 mode "move to workspace main (a s d f z x c v)"
+mode "move to workspace main (a s d f z x c v)" {
+
+
+
+        # Move to main screen
+        bindsym a move workspace a; mode default;
+
+        # Move to main screen
+        bindsym s move workspace s; mode default;
+
+        # Move to main screen
+        bindsym d move workspace d; mode default;
+
+        # Move to main screen
+        bindsym f move workspace f; mode default;
+
+        # Move to main screen
+        bindsym z move workspace z; mode default;
+
+        # Move to main screen
+        bindsym x move workspace x; mode default;
+
+        # Move to main screen
+        bindsym c move workspace c; mode default;
+
+        # Move to main screen
+        bindsym v move workspace v; mode default;
+
+
+    bindsym F2 mode "move to workspace side (a s d f z x c v)"
+    bindsym space mode default
+    bindsym Escape mode default
+}
+
+mode "move to workspace side (a s d f z x c v)" {
+
+
+
+        # Move to side screen
+        bindsym a move workspace "a-l"; mode default;
+
+        # Move to side screen
+        bindsym s move workspace "s-l"; mode default;
+
+        # Move to side screen
+        bindsym d move workspace "d-l"; mode default;
+
+        # Move to side screen
+        bindsym f move workspace "f-l"; mode default;
+
+        # Move to side screen
+        bindsym z move workspace "z-l"; mode default;
+
+        # Move to side screen
+        bindsym x move workspace "x-l"; mode default;
+
+        # Move to side screen
+        bindsym c move workspace "c-l"; mode default;
+
+        # Move to side screen
+        bindsym v move workspace "v-l"; mode default;
+
+
+    bindsym F2 mode "move to workspace main (a s d f z x c v)"
+    bindsym space mode default
+    bindsym Escape mode default
+}
+
+bindsym F4 mode "launcher (f c r s q)"
+mode "launcher (f c r s q)" {
+
+
+    bindsym f exec firefox; mode "default";
+    bindsym c \
+        exec mattermost-desktop; \
+        exec slack; \
+        exec signal-desktop; \
+        mode "default"
+    bindsym r \
+        exec sleep 10 && google-chrome http://localhost:3000; \
+        exec gnome-terminal --disable-factory --class 'radiopaedia-server' --working-directory ~/projects/Radiopaedia -- chruby-exec  ruby-2.6.3 -- bundle exec rails s ; \
+        exec gnome-terminal --disable-factory --class 'radiopaedia-console' --working-directory ~/projects/Radiopaedia ; \
+        exec subl --background ~/projects/Radiopaedia ; \
+        mode "default"
+
+    bindsym s exec steam ; mode "default"
+    bindsym comma exec code ~/.config/i3/config ; mode "default"
+
+    bindsym q exec /home/daniel/.bin/killActiveWindow; mode "default"
+
+    bindsym space mode default
+    bindsym Escape mode default
+}
+
+bindsym F8 mode "maintenance (c w a q p)"
+mode "maintenance (c w a q p)" {
+
+
+    # Reload the [C]onfiguration file
+    bindsym c reload; mode default
+    # restart the [W]indow manager in place (preserves your layout/session, can be used to upgrade i3)
+    bindsym w restart; mode default
+    bindsym a exec notify-send "Hi" "notify-send works"; mode default
+    bindsym q kill; mode default
+    bindsym p exec scrot '%Y-%m-%d-%s_screenshot_$wx$h.jpg' -e 'mv $f ~/Pictures/ && notify-send "Saved" $f'; mode default
+
+
+    bindsym space mode default
+    bindsym Escape mode default
+}
+
